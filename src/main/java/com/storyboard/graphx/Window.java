@@ -8,18 +8,15 @@ public class Window extends Stage {
 
     public Window(){
 
-        setHeight(Settings.windowHeight);
-        setWidth(Settings.windowWidth);
+
         setMaximized(false);
         setResizable(false);
         setTitle(Settings.windowTitle);
 
-        setScene(new Scene(new Editor()));
+        Scene scene = new Scene(new Editor(), Settings.windowWidth, Settings.windowHeight);
+
+        setScene(scene);
 
         show();
     }
-}
-
-class SceneManager{
-
 }

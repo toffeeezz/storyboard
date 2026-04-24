@@ -1,43 +1,59 @@
 package com.storyboard.graphx;
 
+import com.storyboard.utils.Vector2;
 import javafx.scene.layout.StackPane;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StoryNode extends StackPane {
 
-    protected Vector2 position;
+    protected Vector2 positionInWorld; //Already at the center of the node
+    protected Vector2 positionInPixel;
     protected StoryNode parentNode;
+    protected List<StoryNode> children;
+    protected Vector2 origin;
 
-    final Vector2 delta = new Vector2();
+    Vector2 lastMousePos;
 
     protected StoryNode(){
         setViewOrder(-10);
         setOnMousePressed(mouseEvent -> {
-            delta.x = getLayoutX() - mouseEvent.getSceneX();
-            delta.y = getLayoutY() - mouseEvent.getSceneY();
-
+            lastMousePos = new Vector2(mouseEvent.getSceneX(), mouseEvent.getSceneY());
             mouseEvent.consume();
         });
         setOnMouseDragged(mouseEvent -> {
-            Vector2 moveDir = new Vector2(mouseEvent.getSceneX() + delta.x, mouseEvent.getSceneY() + delta.y);
-            setPosition(moveDir);
+            double currScale = Editor.worldPane.getScaleX();
+
+            Vector2 rawDelta = Vector2.subtract(new Vector2(mouseEvent.getSceneX(), mouseEvent.getSceneY()), lastMousePos);
+            Vector2 scaledDelta = rawDelta.divideBy(currScale);
+
+            Vector2 moveDir = Vector2.add(positionInPixel, scaledDelta);
+            setLayoutX(moveDir.x.get());
+            setLayoutY(moveDir.y.get());
+            updatePosition();
+
+            lastMousePos = new Vector2(mouseEvent.getSceneX(), mouseEvent.getSceneY());
 
             mouseEvent.consume();
         });
+
+        children = new ArrayList<>();
     }
 
     protected void setParentNode(StoryNode node){parentNode = node;}
-    protected StoryNode getParentNode(){return parentNode;}
+    public StoryNode getParentNode(){return parentNode;}
 
-    protected void setPosition(Vector2 position){
-        this.position = position;
-        setLayoutX(position.x);
-        setLayoutY(position.y);
+    protected void addChildren(StoryNode node){children.add(node);}
+
+    protected void updatePosition() {
+
+        Vector2 pixelPos = new Vector2(getLayoutX(), getLayoutY());
+
+        positionInPixel = pixelPos;
+        positionInWorld = new Vector2(pixelPos.x.get() - Editor.pixelOrigin.x.get(), Editor.pixelOrigin.y.get() - pixelPos.y.get());
+
+        positionInPixel.x.bind(layoutXProperty());
+        positionInPixel.y.bind(layoutYProperty());
     }
-
-    protected Vector2 getPosition(){
-
-        return new Vector2(position.x - (this.getWidth() / 2),
-                                    position.y - (this.getHeight() / 2));
-    }
-
 }
