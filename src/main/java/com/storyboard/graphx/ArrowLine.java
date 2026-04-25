@@ -44,7 +44,7 @@ public class ArrowLine {
         line.endYProperty().bind(nodeY);
         line.setStrokeWidth(5);
         line.setStroke(Color.WHITE);
-        line.setViewOrder(-11);
+        line.setViewOrder(-9);
 
 
         Polygon head = new Polygon(
@@ -90,11 +90,10 @@ public class ArrowLine {
         }, node.widthProperty(), node.layoutXProperty(), angle);
 
         endpointY = Bindings.createDoubleBinding(() -> {
-            double h;
-            double degrees = angle.get();
+            double radians = Math.toRadians(angle.get());
             double totalH = node.getHeight();
 
-            h = totalH / 2 - (degrees * (totalH / 180));
+            double h = (totalH / 2) - (Math.sin(radians) * (totalH / 2));
 
             return node.getLayoutY() + h;
 
