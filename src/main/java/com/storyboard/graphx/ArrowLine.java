@@ -19,6 +19,8 @@ public class ArrowLine {
 
     public final DoubleBinding angle;
     public final DoubleBinding hypLen;
+    public final DoubleBinding endpointX;
+    public final DoubleBinding endpointY;
 
     public final List<Node> shapes = new ArrayList<>();
 
@@ -30,14 +32,16 @@ public class ArrowLine {
         this.parent = parent;
         this.node = node;
 
-
+        DoubleBinding parentX = parent.layoutXProperty().add(parent.widthProperty().divide(2));
+        DoubleBinding parentY = parent.layoutYProperty().add(parent.heightProperty().divide(2));
+        DoubleBinding nodeX = node.layoutXProperty().add(node.widthProperty().divide(2));
+        DoubleBinding nodeY = node.layoutYProperty().add(node.heightProperty().divide(2));
 
         //Create the line and bind each point from the parent to the child
         Line line = new Line();
-        line.startXProperty().bind(parent.layoutXProperty().add(parent.widthProperty().divide(2)));
-        line.startYProperty().bind(parent.layoutYProperty().add(parent.heightProperty().divide(2)));
-        line.endXProperty().bind(node.layoutXProperty().add(node.widthProperty().divide(2)));
-        line.endYProperty().bind(node.layoutYProperty().add(node.heightProperty().divide(2)));
+        line.startXProperty().bind(parentX);
+        line.startYProperty().bind(parentY);
+        line.endYProperty().bind(nodeY);
         line.setStrokeWidth(5);
         line.setStroke(Color.WHITE);
         line.setViewOrder(-11);
@@ -54,26 +58,53 @@ public class ArrowLine {
         head.setFill(Color.WHITE);
         head.setViewOrder(-11);
 
-        //Create the hypotenuse line
-        Vector2 hypPoints = new Vector2();
-        hypPoints.x.bind(line.endXProperty().subtract(line.startXProperty()));
-        hypPoints.y.bind(line.endYProperty().subtract(line.startYProperty()));
+        //Calculate the distance between the two points of the line
+        Vector2 dist = new Vector2();
+        dist.x.bind(nodeX.subtract(parentX));
+        dist.y.bind(nodeY.subtract(parentY));
         hypLen = Bindings.createDoubleBinding(() -> {
-            double dx = hypPoints.x.get();
-            double dy = hypPoints.y.get();
+            double dx = dist.x.get();
+            double dy = dist.y.get();
             return Math.sqrt(dx * dx + dy * dy);
-        }, hypPoints.x, hypPoints.y);
+        }, dist.x, dist.y);
 
-
+        //Calculate the angle of the line
         angle = Bindings.createDoubleBinding(() -> {
-            double dx = hypPoints.x.get();
-            double dy = hypPoints.y.get();
+            double dx = dist.x.get();
+            double dy = dist.y.get();
 
             double radians = Math.atan2(dy, dx);
             return Math.toDegrees(radians);
-        }, hypPoints.x, hypPoints.y);
+        }, dist.x, dist.y);
 
-        hypLen.addListener(_ -> System.out.println("Len: " + hypLen.get()));
+        //Calculate the X endpoint based on the angle of the arrow
+        endpointX = Bindings.createDoubleBinding(() -> {
+            double w;
+            double degrees = Math.abs(angle.get());
+            double totalW = node.getWidth();
+
+            w = degrees * (totalW / 180);
+
+            return node.getLayoutX() + w;
+
+        }, node.widthProperty(), node.layoutXProperty(), angle);
+
+        endpointY = Bindings.createDoubleBinding(() -> {
+            double h;
+            double degrees = angle.get();
+            double totalH = node.getHeight();
+
+            h = totalH / 2 - (degrees * (totalH / 180));
+
+            return node.getLayoutY() + h;
+
+        }, node.heightProperty(), node.layoutYProperty(), angle);
+
+        line.endXProperty().bind(endpointX);
+        line.endYProperty().bind(endpointY);
+
+
+        angle.addListener(_ -> System.out.println("Angle: " + angle.get()));
 
         head.rotateProperty().bind(angle);
 
