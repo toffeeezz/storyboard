@@ -4,6 +4,8 @@ import com.storyboard.constants.Settings;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.util.Objects;
+
 public class Window extends Stage {
 
     public Window(){
@@ -13,7 +15,12 @@ public class Window extends Stage {
         setResizable(false);
         setTitle(Settings.windowTitle);
 
+
+
         Scene scene = new Scene(new Editor(), Settings.windowWidth, Settings.windowHeight);
+
+        String css = Objects.requireNonNull(this.getClass().getResource("/css/style.css")).toExternalForm();
+        scene.getStylesheets().add(css);
 
         setScene(scene);
 
