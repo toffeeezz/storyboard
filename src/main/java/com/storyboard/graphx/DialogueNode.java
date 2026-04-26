@@ -3,13 +3,16 @@ package com.storyboard.graphx;
 import com.storyboard.utils.Vector2;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Border;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
 
@@ -19,16 +22,21 @@ public class DialogueNode extends StoryNode {
     private final double defaultW = 300;
     private final double defaultH = 200;
 
-   @FXML private TextField textField;
-   @FXML private AnchorPane topBar;
+    @FXML private VBox entryPane;
+    @FXML private FontIcon addButton;
+
+    @FXML private TextField textField;
+    @FXML private AnchorPane topBar;
 
     public DialogueNode(){
-       setDefault();
+        setDefault();
+
     }
 
     public DialogueNode(StoryNode parent){
         setParentNode(parent);
         parent.addChildren(this);
+
         setDefault();
     }
 
@@ -41,8 +49,8 @@ public class DialogueNode extends StoryNode {
         setBorder(Border.stroke(Color.WHITE));
         getStyleClass().add("dialogue-card");
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/storyboard/graphx/DialogueNode.fxml"));
 
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/storyboard/graphx/DialogueNode.fxml"));
         loader.setRoot(this);
         loader.setController(this);
 
@@ -52,9 +60,13 @@ public class DialogueNode extends StoryNode {
             throw new RuntimeException(e);
         }
 
-        System.out.println(textField.getText());
 
+        entryPane.getChildren().add(new DialogueEntry());
         origin = new Vector2(this.getPrefWidth() / 2, this.getPrefHeight() / 2);
+        addButton.setCursor(Cursor.HAND);
+        addButton.setOnMousePressed(e -> {
+            entryPane.getChildren().add(new DialogueEntry());
+        });
     }
 
     private void onKeyPressed(KeyEvent event){
