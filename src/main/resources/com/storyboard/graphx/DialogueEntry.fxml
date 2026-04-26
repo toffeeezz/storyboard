@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.paint.RadialGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<fx:root alignment="TOP_CENTER" prefWidth="498.0" styleClass="entry" stylesheets="@../../../css/style.css" type="VBox" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane prefHeight="30.0" prefWidth="498.0" styleClass="entry" stylesheets="@../../../css/style.css">
+         <children>
+            <Label prefHeight="38.0" prefWidth="83.0" text="character:" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="3.0" />
+            <TextField layoutX="106.4" prefHeight="38.0" prefWidth="180.0" styleClass="textArea" stylesheets="@../../../css/style.css" text="toffeezzz" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="106.0" AnchorPane.topAnchor="3.0" />
+            <FontIcon fx:id="deleteButton" iconLiteral="antf-close-circle" iconSize="20" selectionEnd="0" stroke="#ffffff00" text="" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="13.0">
+               <iconColor>
+                  <RadialGradient centerX="0.4867256973433283" centerY="0.4772726694742839" radius="0.9908257843157566">
+                     <stops>
+                        <Stop>
+                           <color>
+                              <Color red="0.29019609093666077" green="0.22745098173618317" blue="0.5098039507865906" />
+                           </color>
+                        </Stop>
+                        <Stop offset="0.006729475100942127">
+                           <color>
+                              <Color red="0.29019609093666077" green="0.22745098173618317" blue="0.5098039507865906" />
+                           </color>
+                        </Stop>
+                        <Stop offset="1.0">
+                           <color>
+                              <Color red="0.7686274647712708" green="0.6274510025978088" blue="0.9607843160629272" />
+                           </color>
+                        </Stop>
+                     </stops>
+                  </RadialGradient>
+               </iconColor>
+            </FontIcon>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="10.0" layoutY="10.0" prefHeight="30.0">
+         <children>
+            <Label prefHeight="31.0" prefWidth="83.0" text="dialogue:" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="3.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane prefHeight="30.0" VBox.vgrow="ALWAYS">
+         <children>
+            <TextArea styleClass="textArea" stylesheets="@../../../css/style.css" text="asd" wrapText="true" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0" />
+         </children>
+      </AnchorPane>
+   </children>
+</fx:root>
