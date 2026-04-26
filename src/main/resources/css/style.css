@@ -47,6 +47,22 @@
     -fx-font-size: 15px;
 }
 
+.entry{
+    -fx-background-color: #2e2450;
+}
+
+.entry .label{
+    -fx-text-fill: #c4a0f5;
+    -fx-font-family: 'Outfit SemiBold';
+    -fx-font-size: 15px;
+}
+
+.entry .textArea{
+    -fx-background-color: #2e2450;
+    -fx-text-fill: #c4a0f5;
+    -fx-font-size: 17;
+}
+
 .editor{
     -fx-background-color: -fx-editor-bg;
 }
