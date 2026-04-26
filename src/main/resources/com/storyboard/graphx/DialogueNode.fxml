@@ -5,22 +5,34 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<fx:root alignment="TOP_CENTER" prefHeight="200.0" prefWidth="500.0" styleClass="dialogue-card" stylesheets="@../../../css/style.css" type="StackPane" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root alignment="TOP_CENTER" prefHeight="200.0" prefWidth="700.0" styleClass="dialogue-card" stylesheets="@../../../css/style.css" type="StackPane" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <AnchorPane id="topBar" fx:id="topBar" maxHeight="-Infinity" prefHeight="10.0" prefWidth="200.0" styleClass="topBar" stylesheets="@../../../css/style.css">
+      <VBox alignment="TOP_CENTER">
          <children>
-            <TextField id="textField" fx:id="textField" prefHeight="30.0" prefWidth="122.0" styleClass="title" stylesheets="@../../../css/style.css" text="Dialogue Node" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="3.0" />
-            <AnchorPane prefHeight="21.0" prefWidth="66.0" styleClass="tag" stylesheets="@../../../css/style.css" AnchorPane.bottomAnchor="7.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="7.0">
+            <AnchorPane id="topBar" fx:id="topBar" maxHeight="-Infinity" prefHeight="10.0" prefWidth="200.0" styleClass="topBar" stylesheets="@../../../css/style.css">
                <children>
-                  <Label fx:id="label" alignment="CENTER" layoutX="11.2" maxWidth="-Infinity" prefHeight="14.0" prefWidth="54.0" styleClass="tag" stylesheets="@../../../css/style.css" text="dialogue" textAlignment="CENTER" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="3.0">
-                     <opaqueInsets>
-                        <Insets />
-                     </opaqueInsets>
-                  </Label>
+                  <TextField id="textField" fx:id="textField" prefHeight="30.0" prefWidth="122.0" styleClass="title" stylesheets="@../../../css/style.css" text="Dialogue Node" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="3.0" />
+                  <AnchorPane prefHeight="21.0" prefWidth="66.0" styleClass="tag" stylesheets="@../../../css/style.css" AnchorPane.bottomAnchor="7.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="7.0">
+                     <children>
+                        <Label fx:id="label" alignment="CENTER" layoutX="11.2" maxWidth="-Infinity" prefHeight="14.0" prefWidth="54.0" styleClass="tag" stylesheets="@../../../css/style.css" text="dialogue" textAlignment="CENTER" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="3.0">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </Label>
+                     </children>
+                  </AnchorPane>
                </children>
             </AnchorPane>
+            <VBox fx:id="entryPane" prefWidth="100.0" VBox.vgrow="ALWAYS" />
+            <FontIcon fx:id="addButton" iconColor="#e8d8ff" iconLiteral="antf-plus-circle" iconSize="40" selectionFill="#e8d8ff" selectionStart="0" stroke="#7b5ea7" textAlignment="CENTER" wrappingWidth="29.600035190582275" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </VBox.margin>
+            </FontIcon>
          </children>
-      </AnchorPane>
+      </VBox>
    </children>
 </fx:root>
