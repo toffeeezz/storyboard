@@ -17,7 +17,7 @@ public class StoryNode extends StackPane {
     Vector2 lastMousePos;
 
     protected StoryNode(){
-        setViewOrder(-10);
+        setViewOrder(Editor.nodeViewOrder);
         setOnMousePressed(mouseEvent -> {
             lastMousePos = new Vector2(mouseEvent.getSceneX(), mouseEvent.getSceneY());
             requestFocus();
@@ -37,6 +37,16 @@ public class StoryNode extends StackPane {
             lastMousePos = new Vector2(mouseEvent.getSceneX(), mouseEvent.getSceneY());
 
             mouseEvent.consume();
+        });
+
+        focusWithinProperty().addListener((_, _, isFocused) -> {
+            if(isFocused){
+                getStyleClass().add("focused");
+                setViewOrder(Editor.nodeViewOrder - 1);
+            }else{
+                getStyleClass().remove("focused");
+                setViewOrder(Editor.nodeViewOrder);
+            }
         });
 
         children = new ArrayList<>();
