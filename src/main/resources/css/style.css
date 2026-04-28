@@ -18,6 +18,14 @@
     -fx-editor-bg: #0f0d17;
 }
 
+.dialogue-card.focused {
+    -fx-background-color: #2e2450;
+    -fx-border-color: #c4a0f5;
+    -fx-border-width: 4 4 4 4;
+    -fx-border-radius: 7;
+    -fx-background-radius: 7;
+}
+
 .dialogue-card {
     -fx-background-color: #2e2450;
     -fx-border-color: #5c4a99;
