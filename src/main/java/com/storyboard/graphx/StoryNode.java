@@ -20,6 +20,7 @@ public class StoryNode extends StackPane {
         setViewOrder(-10);
         setOnMousePressed(mouseEvent -> {
             lastMousePos = new Vector2(mouseEvent.getSceneX(), mouseEvent.getSceneY());
+            requestFocus();
             mouseEvent.consume();
         });
         setOnMouseDragged(mouseEvent -> {
@@ -51,7 +52,7 @@ public class StoryNode extends StackPane {
         Vector2 pixelPos = new Vector2(getLayoutX(), getLayoutY());
 
         positionInPixel = pixelPos;
-        positionInWorld = new Vector2(pixelPos.x.get() - Editor.pixelOrigin.x.get(), Editor.pixelOrigin.y.get() - pixelPos.y.get());
+        positionInWorld = new Vector2(pixelPos.x.get() - Editor.getPixelOrigin().x.get(), Editor.getPixelOrigin().y.get() - pixelPos.y.get());
 
         positionInPixel.x.bind(layoutXProperty());
         positionInPixel.y.bind(layoutYProperty());
