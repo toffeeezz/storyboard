@@ -15,12 +15,23 @@ import javafx.scene.paint.Color;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class DialogueNode extends StoryNode {
 
     private final double defaultW = 300;
     private final double defaultH = 200;
+
+    private final List<DialogueEntry> entryList = new ArrayList<>();
+
+    public String getCompiledDialogue() {
+        compileDialogues();
+        return compiledDialogue;
+    }
+
+    protected String compiledDialogue;
 
     @FXML private VBox entryPane;
     @FXML private FontIcon addButton;
@@ -61,29 +72,31 @@ public class DialogueNode extends StoryNode {
         }
 
 
-        entryPane.getChildren().add(new DialogueEntry());
+
         origin = new Vector2(this.getPrefWidth() / 2, this.getPrefHeight() / 2);
         addButton.setCursor(Cursor.HAND);
         addButton.setOnMousePressed(e -> {
-            entryPane.getChildren().add(new DialogueEntry());
+            DialogueEntry entry = new DialogueEntry();
+            entryList.add(entry);
+            entryPane.getChildren().add(entry);
         });
+        setOnKeyPressed(this::onKeyPressed);
+
     }
 
     private void onKeyPressed(KeyEvent event){
 
         if(event.getCode() == KeyCode.ENTER && event.isShiftDown()){
-
-            //Check if children node exists before proceeding
-            if(children.isEmpty())
-                return;
-
-
-        }else if(event.getCode() == KeyCode.ENTER && event.isControlDown()){
-            if(parentNode == null)
-                return;
-
+            compileDialogues();
         }
-
         event.consume();
+    }
+
+    private void compileDialogues(){
+        StringBuilder sb = new StringBuilder();
+        for(DialogueEntry entry : entryList)
+            sb.append("Character: ").append(entry.getCharacter()).append("\nDialogue: ").append(entry.getDialogue()).append("\n");
+        compiledDialogue = sb.toString();
+        System.out.println(compiledDialogue);
     }
 }
