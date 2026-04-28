@@ -15,6 +15,11 @@ public class Vector2 {
 
     }
 
+    public void setVector(double x, double y){
+        this.x.set(x);
+        this.y.set(y);
+    }
+
     public static Vector2 subtract(Vector2 a, Vector2 b){
         return new Vector2(a.x.get() - b.x.get(), a.y.get() - b.y.get());
     }
