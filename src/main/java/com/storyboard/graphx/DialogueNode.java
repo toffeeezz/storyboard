@@ -76,12 +76,20 @@ public class DialogueNode extends StoryNode {
         origin = new Vector2(this.getPrefWidth() / 2, this.getPrefHeight() / 2);
         addButton.setCursor(Cursor.HAND);
         addButton.setOnMousePressed(e -> {
-            DialogueEntry entry = new DialogueEntry();
-            entryList.add(entry);
-            entryPane.getChildren().add(entry);
+            addEntry(new DialogueEntry(this));
         });
         setOnKeyPressed(this::onKeyPressed);
 
+    }
+
+    public void removeEntry(DialogueEntry entry){
+        entryList.remove(entry);
+        entryPane.getChildren().remove(entry);
+    }
+
+    protected void addEntry(DialogueEntry entry){
+        entryList.add(entry);
+        entryPane.getChildren().add(entry);
     }
 
     private void onKeyPressed(KeyEvent event){
@@ -96,7 +104,7 @@ public class DialogueNode extends StoryNode {
         StringBuilder sb = new StringBuilder();
         for(DialogueEntry entry : entryList)
             sb.append("Character: ").append(entry.getCharacter()).append("\nDialogue: ").append(entry.getDialogue()).append("\n");
-        compiledDialogue = sb.toString();
+        compiledDialogue = sb.toString().trim();
         System.out.println(compiledDialogue);
     }
 }
