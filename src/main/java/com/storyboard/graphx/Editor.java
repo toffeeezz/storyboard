@@ -2,6 +2,8 @@ package com.storyboard.graphx;
 
 import com.storyboard.constants.Settings;
 import com.storyboard.utils.Vector2;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Background;
@@ -18,14 +20,14 @@ public class Editor extends Pane {
 
     protected static Pane worldPane = new Pane();
 
-    public static Vector2 pixelOrigin;
-    public static Vector2 screenCenter;
+    public static Vector2 getPixelOrigin() {
+        return pixelOrigin;
+    }
 
+    private static final Vector2 pixelOrigin = new Vector2();
+    private final Vector2 screenCenter;
 
-    public static Vector2 mousePos;
-    public static Vector2 cameraPos;
-
-    public static Vector2 translateOrigin;
+    private static Vector2 cameraPos;
 
     private Vector2 initClickPos;
     private Vector2 finalClickPos;
@@ -33,24 +35,23 @@ public class Editor extends Pane {
     protected static double zoom;
 
     private final Translate camTranslate;
-    private final Scale camScale;
 
     private final List<ArrowLine> arrowLines = new ArrayList<>();
+    private final List<DialogueNode> dialogueNodes = new ArrayList<>();
 
     protected Editor(){
-        setBackground(Background.fill(Color.BLACK));
         setPrefSize(Settings.windowWidth, Settings.windowHeight);
-        worldPane.setBackground(Background.fill(Color.BLACK));
+        getStyleClass().add("editor");
         worldPane.setPrefSize(10000, 10000);
 
         //Centralize everything
-        pixelOrigin = new Vector2(worldPane.getPrefWidth() / 2, worldPane.getPrefHeight() / 2);
+        pixelOrigin.setVector(worldPane.getPrefWidth() / 2, worldPane.getPrefHeight() / 2);
         screenCenter = new Vector2(getPrefWidth() / 2, getPrefHeight() / 2);
-        translateOrigin = new Vector2((this.getPrefWidth() / 2) - (worldPane.getPrefWidth() / 2), (this.getPrefHeight() / 2) - (worldPane.getPrefHeight() / 2));
+        Vector2 translateOrigin = new Vector2((this.getPrefWidth() / 2) - (worldPane.getPrefWidth() / 2), (this.getPrefHeight() / 2) - (worldPane.getPrefHeight() / 2));
 
         cameraPos = translateOrigin;
         camTranslate = new Translate(translateOrigin.x.get(), translateOrigin.y.get());
-        camScale = new Scale(1, 1);
+        Scale camScale = new Scale(1, 1);
         camScale.setPivotX(screenCenter.x.get());
         camScale.setPivotY(screenCenter.y.get());
         zoom = camScale.getX();
@@ -63,20 +64,24 @@ public class Editor extends Pane {
 
         worldPane.getChildren().add(circle);
 
-        DialogueCard card = new DialogueCard();
-        DialogueCard card2 = new DialogueCard(card);
-        DialogueCard card3 = new DialogueCard(card2);
-        DialogueCard card4 = new DialogueCard(card2);
+        DialogueNode card = new DialogueNode();
+        DialogueNode card2 = new DialogueNode(card);
+        DialogueNode card3 = new DialogueNode(card2);
+
+        dialogueNodes.add(card);
+        dialogueNodes.add(card2);
+        dialogueNodes.add(card3);
+        dialogueNodes.add(card);
 
         addNode(card, new Vector2(0, 200));
         addNode(card2, new Vector2(0, -200));
-        addNode(card3, new Vector2(100, -200));
-        addNode(card4, new Vector2(-100, -200));
+        addNode(card3, new Vector2(0, -400));
         card.setParentNode(card2);
 
         setOnMousePressed(this::onMousePressed);
         setOnMouseDragged(this::onMouseDragged);
         setOnMouseReleased(this::onMouseReleased);
+        setOnKeyPressed(this::onKeyPressed);
         setOnScroll(this::onScroll);
 
         getChildren().addAll(worldPane);
@@ -85,13 +90,25 @@ public class Editor extends Pane {
     private void onMousePressed(MouseEvent event) {
         //Record the initial click position
         initClickPos = Vector2.subtract(screenCenter, new Vector2(event.getSceneX(), event.getSceneY()));
+        requestFocus();
+        event.consume();
+    }
 
+    private void onKeyPressed(KeyEvent event){
+        if(event.getCode() == KeyCode.S && event.isControlDown()){
+            StringBuilder sb = new StringBuilder();
+            for(DialogueNode node : dialogueNodes){
+                String text = node.getCompiledDialogue();
+                sb.append(text).append("\n");
+            }
+            System.out.print(sb);
+        }
         event.consume();
     }
 
     private void onMouseDragged(MouseEvent event){
         //Get the distance between initial click position and current position
-        mousePos = Vector2.subtract(screenCenter, new Vector2(event.getSceneX(), event.getSceneY()));
+        Vector2 mousePos = Vector2.subtract(screenCenter, new Vector2(event.getSceneX(), event.getSceneY()));
         Vector2 moveDir = new Vector2(initClickPos.x.get() - mousePos.x.get(),  mousePos.y.get() - initClickPos.y.get());
         Vector2 translateDir = new Vector2(moveDir.x.get() + cameraPos.x.get(),  cameraPos.y.get() - moveDir.y.get());
 
@@ -111,6 +128,7 @@ public class Editor extends Pane {
         double zoomFactor = 1.1;
         double delta = event.getDeltaY();
 
+        //New scale becomes positive or negative based on scroll wheel direction
         double oldScale = worldPane.getScaleX();
         double newScale = (delta > 0) ? oldScale * zoomFactor : oldScale / zoomFactor;
 
