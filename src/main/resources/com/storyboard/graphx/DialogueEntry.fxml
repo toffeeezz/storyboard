@@ -15,7 +15,7 @@
       <AnchorPane prefHeight="30.0" prefWidth="498.0" styleClass="entry" stylesheets="@../../../css/style.css">
          <children>
             <Label prefHeight="38.0" prefWidth="83.0" text="character:" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="3.0" />
-            <TextField layoutX="106.4" prefHeight="38.0" prefWidth="180.0" styleClass="textArea" stylesheets="@../../../css/style.css" text="toffeezzz" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="106.0" AnchorPane.topAnchor="3.0" />
+            <TextField fx:id="characterField" layoutX="106.4" prefHeight="38.0" prefWidth="180.0" styleClass="textArea" stylesheets="@../../../css/style.css" text="toffeezzz" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="106.0" AnchorPane.topAnchor="3.0" />
             <FontIcon fx:id="deleteButton" iconLiteral="antf-close-circle" iconSize="20" selectionEnd="0" stroke="#ffffff00" text="" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="13.0">
                <iconColor>
                   <RadialGradient centerX="0.4867256973433283" centerY="0.4772726694742839" radius="0.9908257843157566">
@@ -48,7 +48,7 @@
       </AnchorPane>
       <AnchorPane prefHeight="30.0" VBox.vgrow="ALWAYS">
          <children>
-            <TextArea styleClass="textArea" stylesheets="@../../../css/style.css" text="asd" wrapText="true" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0" />
+            <TextArea fx:id="dialogueField" styleClass="textArea" stylesheets="@../../../css/style.css" text="asd" wrapText="true" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0" />
          </children>
       </AnchorPane>
    </children>
