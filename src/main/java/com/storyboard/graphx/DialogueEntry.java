@@ -15,6 +15,7 @@ public class DialogueEntry extends VBox {
 
     private String character;
     private String dialogue;
+    private DialogueNode parentNode;
 
     public String getDialogue() {
         dialogue = dialogueField.getText();
@@ -32,11 +33,12 @@ public class DialogueEntry extends VBox {
     @FXML private TextField characterField;
     @FXML private TextArea dialogueField;
 
-    public DialogueEntry(){
+    public DialogueEntry(DialogueNode dialogueNode){
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/storyboard/graphx/DialogueEntry.fxml"));
 
         loader.setRoot(this);
         loader.setController(this);
+        parentNode = dialogueNode;
 
         try {
             loader.load();
@@ -48,11 +50,8 @@ public class DialogueEntry extends VBox {
         character = characterField.getText();
 
         deleteButton.setCursor(Cursor.HAND);
-        deleteButton.setOnMousePressed(e -> {
-            if(!(getParent() instanceof  VBox dialogueNode))
-                return;
-            dialogueNode.getChildren().remove(this);
-            System.out.println("remove");
+        deleteButton.setOnMousePressed(_ -> {
+            dialogueNode.removeEntry(this);
         });
     }
 }
