@@ -71,7 +71,6 @@ public class Editor extends Pane {
         dialogueNodes.add(card);
         dialogueNodes.add(card2);
         dialogueNodes.add(card3);
-        dialogueNodes.add(card);
 
         addNode(card, new Vector2(0, 200));
         addNode(card2, new Vector2(0, -200));
@@ -97,13 +96,15 @@ public class Editor extends Pane {
     private void onKeyPressed(KeyEvent event){
         if(event.getCode() == KeyCode.S && event.isControlDown()){
             StringBuilder sb = new StringBuilder();
-            for(DialogueNode node : dialogueNodes){
-                String text = node.getCompiledDialogue();
-                sb.append(text).append("\n");
+            for(int i = 0; i < dialogueNodes.size(); i++){
+                String text = dialogueNodes.get(i).getCompiledDialogue();
+                if(text.equalsIgnoreCase("\n")) continue;
+                sb.append(text.trim());
+                if(i < dialogueNodes.size() - 1) sb.append("\n");
             }
             System.out.print(sb);
+            event.consume();
         }
-        event.consume();
     }
 
     private void onMouseDragged(MouseEvent event){
