@@ -39,15 +39,14 @@ public class DialogueNode extends StoryNode {
     @FXML private TextField textField;
     @FXML private AnchorPane topBar;
 
-    public DialogueNode(){
+    public DialogueNode(Editor editor){
+        super(editor);
         setDefault();
 
     }
 
-    public DialogueNode(StoryNode parent){
-        setParentNode(parent);
-        parent.addChildren(this);
-
+    public DialogueNode(Editor editor, StoryNode parent){
+        super(editor, parent);
         setDefault();
     }
 
@@ -79,7 +78,6 @@ public class DialogueNode extends StoryNode {
             addEntry(new DialogueEntry(this));
         });
         setOnKeyPressed(this::onKeyPressed);
-
     }
 
     public void removeEntry(DialogueEntry entry){
@@ -91,9 +89,9 @@ public class DialogueNode extends StoryNode {
         entryList.add(entry);
         entryPane.getChildren().add(entry);
     }
-
-    private void onKeyPressed(KeyEvent event){
-
+    @Override
+    protected void onKeyPressed(KeyEvent event){
+        super.onKeyPressed(event);
         if(event.getCode() == KeyCode.ENTER && event.isShiftDown()){
             compileDialogues();
         }
