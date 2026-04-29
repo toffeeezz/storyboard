@@ -24,8 +24,8 @@ public class ArrowLine {
 
     public final List<Node> shapes = new ArrayList<>();
 
-    protected final StoryNode parent;
-    protected final StoryNode node;
+    protected StoryNode parent;
+    protected StoryNode node;
 
 
     public ArrowLine(double arrowSize, StoryNode parent, StoryNode node){
@@ -44,7 +44,7 @@ public class ArrowLine {
         line.endYProperty().bind(nodeY);
         line.setStrokeWidth(5);
         line.setStroke(Color.WHITE);
-        line.setViewOrder(-9);
+        line.setViewOrder(Editor.lineViewOrder);
 
 
         Polygon head = new Polygon(
@@ -56,7 +56,7 @@ public class ArrowLine {
         head.layoutXProperty().bind(line.endXProperty().add(arrowSize / 2));
         head.layoutYProperty().bind(line.endYProperty());
         head.setFill(Color.WHITE);
-        head.setViewOrder(-11);
+        head.setViewOrder(Editor.arrowViewOrder);
 
         //Calculate the distance between the two points of the line
         Vector2 dist = new Vector2();
