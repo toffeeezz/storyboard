@@ -18,9 +18,13 @@ import java.util.List;
 
 public class Editor extends Pane {
 
+    public static final int nodeViewOrder = -9;
+    public static final int arrowViewOrder = -15;
+    public static final int lineViewOrder = -5;
+
     protected static Pane worldPane = new Pane();
 
-    public static Vector2 getPixelOrigin() {
+    public Vector2 getPixelOrigin() {
         return pixelOrigin;
     }
 
@@ -64,18 +68,13 @@ public class Editor extends Pane {
 
         worldPane.getChildren().add(circle);
 
-        DialogueNode card = new DialogueNode();
-        DialogueNode card2 = new DialogueNode(card);
-        DialogueNode card3 = new DialogueNode(card2);
-
-        dialogueNodes.add(card);
-        dialogueNodes.add(card2);
-        dialogueNodes.add(card3);
+        DialogueNode card = new DialogueNode(this);
+        DialogueNode card2 = new DialogueNode(this, card);
+        DialogueNode card3 = new DialogueNode(this, card2);
 
         addNode(card, new Vector2(0, 200));
         addNode(card2, new Vector2(0, -200));
         addNode(card3, new Vector2(0, -400));
-        card.setParentNode(card2);
 
         setOnMousePressed(this::onMousePressed);
         setOnMouseDragged(this::onMouseDragged);
@@ -155,6 +154,9 @@ public class Editor extends Pane {
     protected void addNode(StoryNode node, Vector2 pos){
         worldPane.getChildren().add(node);
 
+        if(node instanceof DialogueNode dialogueNode)
+            dialogueNodes.add(dialogueNode);
+
         //Relocate the node to 'pos' after adding
         Vector2 spawn = new Vector2((pixelOrigin.x.get() + pos.x.get()) - node.origin.x.get(), (pixelOrigin.y.get() - pos.y.get()) - node.origin.y.get());
         node.relocate(spawn.x.get(), spawn.y.get());
@@ -164,9 +166,26 @@ public class Editor extends Pane {
         if(parent == null)
             return;
 
-        ArrowLine arrow = new ArrowLine(20, parent, node);
-        arrowLines.add(arrow);
-        worldPane.getChildren().addAll(arrow.shapes);
+        drawArrowLines(node.getArrowLine());
+
+    }
+    protected void drawArrowLines(ArrowLine line){
+        arrowLines.add(line);
+        worldPane.getChildren().addAll(line.shapes);
+    }
+
+    protected void removeNode(StoryNode node){
+
+
+        worldPane.getChildren().remove(node);
+
+        if(node instanceof DialogueNode dialogueNode)
+            dialogueNodes.remove(dialogueNode);
+    }
+
+    protected void removeArrow(ArrowLine arrow){
+        worldPane.getChildren().removeAll(arrow.shapes);
+        arrowLines.remove(arrow);
     }
 }
 
