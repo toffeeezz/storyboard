@@ -1,6 +1,8 @@
 package com.storyboard.graphx;
 
 import com.storyboard.constants.Settings;
+import com.storyboard.logic.Dialogue;
+import com.storyboard.logic.FileExporter;
 import com.storyboard.utils.Vector2;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -13,6 +15,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,14 +97,11 @@ public class Editor extends Pane {
 
     private void onKeyPressed(KeyEvent event){
         if(event.getCode() == KeyCode.S && event.isControlDown()){
-            StringBuilder sb = new StringBuilder();
-            for(int i = 0; i < dialogueNodes.size(); i++){
-                String text = dialogueNodes.get(i).getCompiledDialogue();
-                if(text.equalsIgnoreCase("\n")) continue;
-                sb.append(text.trim());
-                if(i < dialogueNodes.size() - 1) sb.append("\n");
+            try {
+                new FileExporter().exportSBoard(dialogueNodes.stream().filter(n -> !n.isChild()).findFirst().orElse(null), "SaveData");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-            System.out.print(sb);
             event.consume();
         }
     }
