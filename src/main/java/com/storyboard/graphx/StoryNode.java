@@ -94,6 +94,7 @@ public class StoryNode extends StackPane {
     protected void setParentNode(StoryNode node){
         if(node == null) {
             arrowLine = null;
+            parentNode = null;
             return;
         }
         parentNode = node;
@@ -118,18 +119,18 @@ public class StoryNode extends StackPane {
         if(e.getCode() == KeyCode.DELETE) {
             editor.removeNode(this);
 
-
-
             if(!isChild() && isParent()){
-                for (StoryNode node : children) {
-                    node.setParentNode(null);
+                for (StoryNode node : new ArrayList<>(children)) {
                     editor.removeArrow(node.arrowLine);
+                    node.setParentNode(null);
                 }
+                children.clear();
             }else if(isChild() && isParent()){
                 parentNode.children.remove(this);
                 for(StoryNode node : children){
                     editor.removeArrow(node.arrowLine);
                     node.setParentNode(parentNode);
+                    parentNode.children.add(node);
                     editor.drawArrowLines(node.getArrowLine());
                 }
                 parentNode.children.remove(this);
