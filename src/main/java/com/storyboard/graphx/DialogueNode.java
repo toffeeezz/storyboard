@@ -65,6 +65,13 @@ public class DialogueNode extends StoryNode {
         addButton.setCursor(Cursor.HAND);
         addButton.setOnMousePressed(_ -> addEntry(new DialogueEntry(this)));
         setOnKeyPressed(this::onKeyPressed);
+
+        nameField.focusedProperty().addListener((_, _, isFocused) -> {
+            if(!isFocused){
+                setId(nameField.getText());
+                System.out.println("Exited");
+            }
+        });
     }
 
     protected void removeEntry(DialogueEntry entry){
