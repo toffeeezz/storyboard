@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+
+<fx:root prefHeight="800.0" prefWidth="1200.0" type="StackPane" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <BorderPane fx:id="borderPane" prefHeight="200.0" prefWidth="200.0">
+         <center>
+            <Pane fx:id="editorPane" prefHeight="800.0" prefWidth="907.0" styleClass="editor" stylesheets="@../../../../css/style.css" BorderPane.alignment="CENTER" />
+         </center>
+         <right>
+            <Pane fx:id="inspectorWindow" prefWidth="200.0" styleClass="inspector" stylesheets="@../../../../css/style.css" BorderPane.alignment="CENTER" />
+         </right>
+      </BorderPane>
+   </children>
+</fx:root>
