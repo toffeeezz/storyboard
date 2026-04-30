@@ -3,6 +3,8 @@ package com.storyboard.graphx;
 import com.storyboard.constants.Settings;
 import com.storyboard.logic.FileExporter;
 import com.storyboard.utils.Vector2;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -34,8 +36,9 @@ public class Editor extends Pane {
 
     private final List<ArrowLine> arrowLines = new ArrayList<>();
     private final List<DialogueNode> dialogueNodes = new ArrayList<>();
+    private final ObjectProperty<StoryNode> selectedNode = new SimpleObjectProperty<>();
 
-    protected Editor(){
+    public Editor(){
         setPrefSize(Settings.windowWidth, Settings.windowHeight);
         getStyleClass().add("editor");
         worldPane.setPrefSize(10000, 10000);
@@ -52,6 +55,9 @@ public class Editor extends Pane {
         circle.setFill(Color.RED);
 
         worldPane.getChildren().add(circle);
+        focusedProperty().addListener(_ -> {
+            selectedNode.set(null);
+        });
 
         DialogueNode card = new DialogueNode(this);
         DialogueNode card2 = new DialogueNode(this, card);
@@ -72,7 +78,7 @@ public class Editor extends Pane {
 
     private void onMousePressed(MouseEvent event) {
         //Record the initial click position
-        initClickPos = camera.getMousePos(event);
+        initClickPos = camera.getMouseScreenPos(event);
         requestFocus();
         event.consume();
     }
@@ -90,7 +96,7 @@ public class Editor extends Pane {
 
     private void onMouseDragged(MouseEvent event){
         //Get the distance between initial click position and current position
-        Vector2 mousePos = camera.getMousePos(event);
+        Vector2 mousePos = camera.getMouseScreenPos(event);
         Vector2 moveDir = new Vector2(initClickPos.x.get() - mousePos.x.get(),  mousePos.y.get() - initClickPos.y.get());
         Vector2 translateDir = new Vector2(moveDir.x.get() + camera.position.x.get(),  camera.position.y.get() - moveDir.y.get());
 
@@ -107,7 +113,7 @@ public class Editor extends Pane {
 
     private void onScroll(ScrollEvent event){
         double delta = event.getDeltaY();
-        camera.zoom(delta, camera.getMousePos(event));
+        camera.zoom(delta, new Vector2(event.getX(), event.getY()));
         event.consume();
     }
 
@@ -142,6 +148,16 @@ public class Editor extends Pane {
     protected void removeArrow(ArrowLine arrow){
         worldPane.getChildren().removeAll(arrow.shapes);
         arrowLines.remove(arrow);
+    }
+
+    public ObjectProperty<StoryNode> selectedNodeProperty() {return selectedNode;}
+
+    public StoryNode getSelectedNode() {
+        return selectedNode.get();
+    }
+
+    public void setSelectedNode(StoryNode node) {
+        selectedNode.set(node);
     }
 
 
@@ -187,6 +203,8 @@ public class Editor extends Pane {
             double mouseX = mousePos.x.get();
             double mouseY = mousePos.y.get();
 
+            System.out.println("Mouse X: " + mouseX);
+
             // Adjust the translation to adjust for the scale change
             double f = (newScale / oldScale) - 1;
             double dx = (mouseX - (worldPane.getBoundsInLocal().getWidth() / 2 + worldPane.getTranslateX())) * f;
@@ -198,7 +216,7 @@ public class Editor extends Pane {
             worldPane.setTranslateX(worldPane.getTranslateX() - dx);
             worldPane.setTranslateY(worldPane.getTranslateY() - dy);
         }
-        public Vector2 getMousePos(InputEvent event){
+        public Vector2 getMouseScreenPos(InputEvent event){
             if(event instanceof MouseEvent mouseEvent)
                 return Vector2.subtract(camera.screenCenter, new Vector2(mouseEvent.getSceneX(), mouseEvent.getSceneY()));
             if(event instanceof ScrollEvent scrollEvent)
