@@ -3,6 +3,7 @@ package com.storyboard.graphx;
 import com.storyboard.utils.Vector2;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
@@ -14,26 +15,39 @@ public class StoryNode extends StackPane {
 
     private final Editor editor;
 
-    public ArrowLine getArrowLine() {
-        return arrowLine;
-    }
-
     private ArrowLine arrowLine;
 
     private StoryNode parentNode;
 
-
     protected Vector2 positionInWorld; //Already at the center of the node
     protected Vector2 positionInPixel;
-
-    public List<StoryNode> getChildrenList() {
-        return children;
-    }
 
     private final List<StoryNode> children;
     protected Vector2 origin;
 
     Vector2 lastMousePos;
+
+    public ArrowLine getArrowLine() {
+        return arrowLine;
+    }
+
+    public List<StoryNode> getChildrenList() {
+        return children;
+    }
+
+    public void setParentNode(StoryNode node){
+        if(node == null) {
+            arrowLine = null;
+            parentNode = null;
+            return;
+        }
+        parentNode = node;
+        arrowLine = new ArrowLine(20, parentNode, this);
+    }
+
+    public StoryNode getParentNode(){
+        return parentNode;
+    }
 
     protected StoryNode(Editor editor){
         this.editor = editor;
@@ -60,12 +74,12 @@ public class StoryNode extends StackPane {
             mouseEvent.consume();
         });
         setOnMouseDragged(mouseEvent -> {
-            double currScale = Editor.worldPane.getScaleX();
+            double currScale = editor.worldPane.getScaleX();
 
             Vector2 rawDelta = Vector2.subtract(new Vector2(mouseEvent.getSceneX(), mouseEvent.getSceneY()), lastMousePos);
             Vector2 scaledDelta = rawDelta.divideBy(currScale);
-
             Vector2 moveDir = Vector2.add(positionInPixel, scaledDelta);
+
             setLayoutX(moveDir.x.get());
             setLayoutY(moveDir.y.get());
             updatePosition();
@@ -74,35 +88,25 @@ public class StoryNode extends StackPane {
 
             mouseEvent.consume();
         });
-        setOnKeyPressed(this::onKeyPressed);
 
+        setOnKeyPressed(this::onKeyPressed);
 
         focusWithinProperty().addListener((_, _, isFocused) -> {
             if(isFocused){
                 if(!getStyleClass().contains("focused"))
                     getStyleClass().add("focused");
                 setViewOrder(Editor.nodeViewOrder - 1);
+                editor.setSelectedNode(this);
             }else{
                 getStyleClass().remove("focused");
                 setViewOrder(Editor.nodeViewOrder);
             }
         });
-
-
     }
 
-    protected void setParentNode(StoryNode node){
-        if(node == null) {
-            arrowLine = null;
-            parentNode = null;
-            return;
-        }
-        parentNode = node;
-        arrowLine = new ArrowLine(20, parentNode, this);
+    protected void addChildren(StoryNode node){
+        children.add(node);
     }
-    public StoryNode getParentNode(){return parentNode;}
-
-    protected void addChildren(StoryNode node){children.add(node);}
 
     protected void updatePosition() {
 
@@ -119,25 +123,18 @@ public class StoryNode extends StackPane {
         if(e.getCode() == KeyCode.DELETE) {
             editor.removeNode(this);
 
-            if(!isChild() && isParent()){
-                for (StoryNode node : new ArrayList<>(children)) {
-                    editor.removeArrow(node.arrowLine);
-                    node.setParentNode(null);
-                }
-                children.clear();
-            }else if(isChild() && isParent()){
-                parentNode.children.remove(this);
-                for(StoryNode node : children){
-                    editor.removeArrow(node.arrowLine);
-                    node.setParentNode(parentNode);
-                    parentNode.children.add(node);
-                    editor.drawArrowLines(node.getArrowLine());
-                }
-                parentNode.children.remove(this);
+            if(isChild()) {
                 editor.removeArrow(arrowLine);
-            }else if(isChild() && !isParent()){
                 parentNode.children.remove(this);
-                editor.removeArrow(arrowLine);
+            }
+
+            if(isParent()){
+                for (StoryNode child : children) {
+                    editor.removeArrow(child.arrowLine);
+                    child.setParentNode(parentNode);
+                    if(parentNode != null)
+                        editor.drawArrowLines(child.getArrowLine());
+                }
             }
         }
         System.out.println("delete");
