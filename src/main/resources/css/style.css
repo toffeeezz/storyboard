@@ -19,7 +19,6 @@
 }
 
 .dialogue-card.focused {
-    -fx-background-color: #2e2450;
     -fx-border-color: #c4a0f5;
     -fx-border-width: 4 4 4 4;
     -fx-border-radius: 7;
@@ -73,4 +72,19 @@
 
 .editor{
     -fx-background-color: -fx-editor-bg;
+    -fx-border-width: 5;
+    -fx-border-color: #16121f;
+}
+
+
+.UI .inspector{
+    -fx-background-color: #16121f;
+    -fx-text-fill: #a090cc;
+}
+
+.UI .inspector .header{
+    -fx-background-color: #1e1830;
+    -fx-text-fill: #e8d8ff;
+    -fx-font-family: 'Outfit SemiBold';
+    -fx-font-size: 14;
 }
