@@ -1,9 +1,6 @@
 package com.storyboard.graphx;
 
 import com.storyboard.utils.Vector2;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
-import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
@@ -14,10 +11,9 @@ import java.util.List;
 public class StoryNode extends StackPane {
 
     private final Editor editor;
-    private ArrowLine arrowLine;
     private StoryNode parentNode;
-    private Vector2 positionInWorld; //Already at the center of the node
-    private Vector2 positionInPixel;
+    protected Vector2 positionInWorld; //Already at the center of the node
+    protected Vector2 positionInPixel;
 
     private final List<StoryNode> children;
     private final List<ArrowLine> arrowLines;
@@ -30,13 +26,8 @@ public class StoryNode extends StackPane {
         return origin;
     }
 
-
     public Vector2 getPositionInPixel() {
         return positionInPixel.multiplyBy(-1);
-    }
-
-    public ArrowLine getArrowLine() {
-        return arrowLine;
     }
 
     public List<StoryNode> getChildrenList() {
@@ -45,7 +36,6 @@ public class StoryNode extends StackPane {
 
     public void setParentNode(StoryNode node){
         if(node == null) {
-            arrowLine = null;
             parentNode = null;
             System.out.println("null parent");
             return;
@@ -61,7 +51,6 @@ public class StoryNode extends StackPane {
     protected StoryNode(Editor editor){
         this.editor = editor;
         this.parentNode = null;
-        this.arrowLine = null;
         children = new ArrayList<>();
         arrowLines = new ArrayList<>();
         setDefaults();
@@ -90,8 +79,8 @@ public class StoryNode extends StackPane {
             Vector2 scaledDelta = rawDelta.divideBy(currScale);
             Vector2 moveDir = Vector2.add(positionInPixel, scaledDelta);
 
-            setLayoutX(moveDir.x.get());
-            setLayoutY(moveDir.y.get());
+            setLayoutX(moveDir.getX());
+            setLayoutY(moveDir.getY());
             updatePosition();
 
             lastMousePos = new Vector2(mouseEvent.getSceneX(), mouseEvent.getSceneY());
@@ -126,7 +115,7 @@ public class StoryNode extends StackPane {
         Vector2 pixelPos = new Vector2(getLayoutX(), getLayoutY());
 
         positionInPixel = pixelPos;
-        positionInWorld = new Vector2(pixelPos.x.get() - editor.getPixelOrigin().x.get(), editor.getPixelOrigin().y.get() - pixelPos.y.get());
+        positionInWorld = new Vector2(pixelPos.getX() - editor.getPixelOrigin().getX(), editor.getPixelOrigin().getY() - pixelPos.getY());
 
         positionInPixel.x.bind(layoutXProperty());
         positionInPixel.y.bind(layoutYProperty());
@@ -165,5 +154,4 @@ public class StoryNode extends StackPane {
     }
 
     protected boolean isChild(){return parentNode != null;}
-    protected boolean isParent(){return !children.isEmpty();}
 }
