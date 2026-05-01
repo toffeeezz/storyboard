@@ -14,28 +14,26 @@ import java.util.List;
 public class StoryNode extends StackPane {
 
     private final Editor editor;
-
     private ArrowLine arrowLine;
-
     private StoryNode parentNode;
-
     private Vector2 positionInWorld; //Already at the center of the node
-
-    public Vector2 getPositionInPixel() {
-        return positionInPixel.multiplyBy(-1);
-    }
-
     private Vector2 positionInPixel;
 
     private final List<StoryNode> children;
+    private final List<ArrowLine> arrowLines;
+
+    protected Vector2 origin;
+
+    Vector2 lastMousePos;
 
     public Vector2 getOrigin() {
         return origin;
     }
 
-    protected Vector2 origin;
 
-    Vector2 lastMousePos;
+    public Vector2 getPositionInPixel() {
+        return positionInPixel.multiplyBy(-1);
+    }
 
     public ArrowLine getArrowLine() {
         return arrowLine;
@@ -49,10 +47,11 @@ public class StoryNode extends StackPane {
         if(node == null) {
             arrowLine = null;
             parentNode = null;
+            System.out.println("null parent");
             return;
         }
         parentNode = node;
-        arrowLine = new ArrowLine(20, parentNode, this);
+
     }
 
     public StoryNode getParentNode(){
@@ -64,15 +63,16 @@ public class StoryNode extends StackPane {
         this.parentNode = null;
         this.arrowLine = null;
         children = new ArrayList<>();
+        arrowLines = new ArrayList<>();
         setDefaults();
     }
 
     protected StoryNode(Editor editor, StoryNode parentNode){
         this.editor = editor;
         this.parentNode = parentNode;
-        this.arrowLine = new ArrowLine(20, parentNode, this);
         parentNode.addChildren(this);
         children = new ArrayList<>();
+        arrowLines = new ArrayList<>();
         setDefaults();
     }
 
@@ -116,6 +116,9 @@ public class StoryNode extends StackPane {
 
     protected void addChildren(StoryNode node){
         children.add(node);
+        ArrowLine arrow = new ArrowLine(20, node, this);
+        editor.drawArrowLines(arrow);
+        arrowLines.add(arrow);
     }
 
     protected void updatePosition() {
@@ -132,22 +135,33 @@ public class StoryNode extends StackPane {
     protected void onKeyPressed(KeyEvent e){
         if(e.getCode() == KeyCode.DELETE) {
             editor.removeNode(this);
-
-            if(isChild()) {
-                editor.removeArrow(arrowLine);
-                parentNode.children.remove(this);
+            if(!arrowLines.isEmpty()){
+                for(ArrowLine arrow : arrowLines)
+                    editor.removeArrow(arrow);
+                arrowLines.clear();
             }
 
-            if(isParent()){
-                for (StoryNode child : children) {
-                    editor.removeArrow(child.arrowLine);
-                    child.setParentNode(parentNode);
-                    if(parentNode != null)
-                        editor.drawArrowLines(child.getArrowLine());
+            if(isChild()){
+                StoryNode parent = getParentNode();
+                parent.children.remove(this);
+                for(ArrowLine arrow : parent.arrowLines){
+                    if(arrow.child != this)
+                        continue;
+                    editor.removeArrow(arrow);
+                }
+
+                for(StoryNode child : children){
+                    child.setParentNode(parent);
+                    parent.addChildren(child);
+                }
+            }
+
+            if(!isChild()){
+                for(StoryNode child : children){
+                    child.setParentNode(null);
                 }
             }
         }
-        System.out.println("delete");
     }
 
     protected boolean isChild(){return parentNode != null;}
