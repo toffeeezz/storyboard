@@ -15,7 +15,6 @@ public class DialogueEntry extends VBox {
 
     private String character;
     private String dialogue;
-    private DialogueNode parentNode;
 
     public String getDialogue() {
         dialogue = dialogueField.getText();
@@ -38,7 +37,6 @@ public class DialogueEntry extends VBox {
 
         loader.setRoot(this);
         loader.setController(this);
-        parentNode = dialogueNode;
 
         try {
             loader.load();
@@ -50,8 +48,6 @@ public class DialogueEntry extends VBox {
         character = characterField.getText();
 
         deleteButton.setCursor(Cursor.HAND);
-        deleteButton.setOnMousePressed(_ -> {
-            dialogueNode.removeEntry(this);
-        });
+        deleteButton.setOnMousePressed(_ -> dialogueNode.removeEntry(this));
     }
 }
