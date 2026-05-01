@@ -36,4 +36,8 @@ public class Vector2 {
     public String toString() {
         return "Vector2(x " + x.get() + ", " + y.get() + " )";
     }
+
+    public Vector2 multiplyBy(double b){
+        return new Vector2(x.get() * b, y.get() * b);
+    }
 }
