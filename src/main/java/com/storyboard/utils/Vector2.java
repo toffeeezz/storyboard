@@ -11,6 +11,14 @@ public class Vector2 {
         this.y.set(y);
     }
 
+    public double getX(){
+        return x.get();
+    }
+
+    public double getY(){
+        return y.get();
+    }
+
     public Vector2(){
 
     }
@@ -34,7 +42,7 @@ public class Vector2 {
 
     @Override
     public String toString() {
-        return "Vector2(x " + x.get() + ", " + y.get() + " )";
+        return "Vector2(x: " + x.get() + ", y: " + y.get() + " )";
     }
 
     public Vector2 multiplyBy(double b){
