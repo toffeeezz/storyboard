@@ -5,6 +5,7 @@ import com.storyboard.logic.FileExporter;
 import com.storyboard.utils.Vector2;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.geometry.Point2D;
 import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -66,7 +67,7 @@ public class Editor extends Pane {
         worldPane.getTransforms().addAll(camera.translate, camera.scale);
 
         //Origin Center
-        Circle circle = new Circle(pixelOrigin.x.get(), pixelOrigin.y.get(), 12);
+        Circle circle = new Circle(pixelOrigin.getX(), pixelOrigin.getY(), 12);
         circle.setFill(Color.RED);
 
         worldPane.getChildren().add(circle);
@@ -92,6 +93,7 @@ public class Editor extends Pane {
     private void onMousePressed(MouseEvent event) {
         //Record the initial click position
         initClickPos = camera.getMouseScreenPos(event);
+        System.out.println(camera.getMouseWorldPos(event));
         requestFocus();
         event.consume();
     }
@@ -108,10 +110,12 @@ public class Editor extends Pane {
     }
 
     private void onMouseDragged(MouseEvent event){
+        if(event.getButton() != MouseButton.PRIMARY)
+            return;
         //Get the distance between initial click position and current position
         Vector2 mousePos = camera.getMouseScreenPos(event);
-        Vector2 moveDir = new Vector2(initClickPos.x.get() - mousePos.x.get(),  mousePos.y.get() - initClickPos.y.get());
-        Vector2 translateDir = new Vector2(moveDir.x.get() + camera.position.x.get(),  camera.position.y.get() - moveDir.y.get());
+        Vector2 moveDir = new Vector2(initClickPos.getX() - mousePos.getX(),  mousePos.getY() - initClickPos.getY());
+        Vector2 translateDir = new Vector2(moveDir.getX() + camera.position.getX(),  camera.position.getY() - moveDir.getY());
 
         //Apply the difference
         camera.drag(translateDir);
@@ -130,15 +134,15 @@ public class Editor extends Pane {
         event.consume();
     }
 
-    protected void addNode(StoryNode node, Vector2 pos){
+    public void addNode(StoryNode node, Vector2 pos){
         worldPane.getChildren().add(node);
 
         if(node instanceof DialogueNode dialogueNode)
             dialogueNodes.add(dialogueNode);
 
         //Relocate the node to 'pos' after adding
-        Vector2 spawn = new Vector2((pixelOrigin.x.get() + pos.x.get()) - node.origin.x.get(), (pixelOrigin.y.get() - pos.y.get()) - node.origin.y.get());
-        node.relocate(spawn.x.get(), spawn.y.get());
+        Vector2 spawn = new Vector2((pixelOrigin.getX() + pos.getX()) - node.origin.getX(), (pixelOrigin.getY() - pos.getY()) - node.origin.getY());
+        node.relocate(spawn.getX(), spawn.getY());
         node.updatePosition();
 
     }
@@ -178,25 +182,25 @@ public class Editor extends Pane {
             Vector2 translateOrigin = new Vector2((getPrefWidth() / 2) - (worldPane.getPrefWidth() / 2), (getPrefHeight() / 2) - (worldPane.getPrefHeight() / 2));
             position = translateOrigin;
 
-            translate = new Translate(translateOrigin.x.get(), translateOrigin.y.get());
+            translate = new Translate(translateOrigin.getX(), translateOrigin.getY());
             scale = new Scale(1, 1);
-            scale.setPivotX(screenCenter.x.get());
-            scale.setPivotY(screenCenter.y.get());
+            scale.setPivotX(screenCenter.getX());
+            scale.setPivotY(screenCenter.getY());
             zoom = scale.getX();
         }
 
         public void drag(Vector2 dir){
-            translate.setY(dir.y.get());
-            translate.setX(dir.x.get());
-            System.out.println(camera.position);
+            translate.setY(dir.getY());
+            translate.setX(dir.getX());
+
         }
 
         public void focus(Vector2 dir){
             Vector2 pos = Vector2.add(dir, screenCenter);
-            translate.setY(pos.y.get());
-            translate.setX(pos.x.get());
+            translate.setY(pos.getY());
+            translate.setX(pos.getX());
             camera.position = pos;
-            System.out.println(camera.position);
+
         }
 
         public void zoom(double delta, Vector2 mousePos){
@@ -208,10 +212,10 @@ public class Editor extends Pane {
 
             if (newScale < 0.3 || newScale > 5.0) return;
 
-            double mouseX = mousePos.x.get();
-            double mouseY = mousePos.y.get();
+            double mouseX = mousePos.getX();
+            double mouseY = mousePos.getY();
 
-            System.out.println("Mouse X: " + mouseX);
+
 
             // Adjust the translation to adjust for the scale change
             double f = (newScale / oldScale) - 1;
@@ -229,6 +233,20 @@ public class Editor extends Pane {
                 return Vector2.subtract(camera.screenCenter, new Vector2(mouseEvent.getSceneX(), mouseEvent.getSceneY()));
             if(event instanceof ScrollEvent scrollEvent)
                 return Vector2.subtract(camera.screenCenter, new Vector2(scrollEvent.getSceneX(), scrollEvent.getSceneY()));
+            else{
+                throw new RuntimeException("Invalid Input Event Passed");
+            }
+        }
+
+        public Vector2 getMouseWorldPos(InputEvent event){
+            if(event instanceof MouseEvent mouseEvent) {
+                Point2D worldPos = worldPane.sceneToLocal(mouseEvent.getSceneX(), mouseEvent.getSceneY());
+                System.out.println("Screen pos: " + getMouseScreenPos(event).multiplyBy(-1));
+                System.out.println("World pos: " + new Vector2(worldPos.getX(), worldPos.getY()));
+                return new Vector2(worldPos.getX() - getPixelOrigin().getX(), -(worldPos.getY() - getPixelOrigin().getY()));
+            }
+            if(event instanceof ScrollEvent scrollEvent)
+                return new Vector2(scrollEvent.getX(), scrollEvent.getY());
             else{
                 throw new RuntimeException("Invalid Input Event Passed");
             }
