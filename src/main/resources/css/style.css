@@ -77,14 +77,24 @@
 }
 
 
-.UI .inspector{
+.inspector{
     -fx-background-color: #16121f;
     -fx-text-fill: #a090cc;
 }
 
-.UI .inspector .header{
+.inspector .header{
     -fx-background-color: #1e1830;
     -fx-text-fill: #e8d8ff;
     -fx-font-family: 'Outfit SemiBold';
     -fx-font-size: 14;
+}
+
+.quickToolBar {
+    -fx-background-color: #16121f;
+}
+
+.quickToolBar .button{
+    -fx-background-color: #16121f;
+    -fx-text-fill: #c4a0f5;
+    -fx-border-color: #c4a0f5;
 }
