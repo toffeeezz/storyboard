@@ -63,15 +63,15 @@ public class ArrowLine {
         dist.x.bind(childX.subtract(nodeX));
         dist.y.bind(childY.subtract(nodeY));
         hypLen = Bindings.createDoubleBinding(() -> {
-            double dx = dist.x.get();
-            double dy = dist.y.get();
+            double dx = dist.getX();
+            double dy = dist.getY();
             return Math.sqrt(dx * dx + dy * dy);
         }, dist.x, dist.y);
 
         //Calculate the angle of the line
         angle = Bindings.createDoubleBinding(() -> {
-            double dx = dist.x.get();
-            double dy = dist.y.get();
+            double dx = dist.getX();
+            double dy = dist.getY();
 
             double radians = Math.atan2(dy, dx);
             return Math.toDegrees(radians);
