@@ -140,10 +140,6 @@ public class Editor extends Pane {
         Vector2 spawn = new Vector2((pixelOrigin.x.get() + pos.x.get()) - node.origin.x.get(), (pixelOrigin.y.get() - pos.y.get()) - node.origin.y.get());
         node.relocate(spawn.x.get(), spawn.y.get());
         node.updatePosition();
-        StoryNode parent = node.getParentNode();
-        if(parent == null)
-            return;
-        drawArrowLines(node.getArrowLine());
 
     }
     protected void drawArrowLines(ArrowLine line){
