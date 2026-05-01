@@ -24,24 +24,24 @@ public class ArrowLine {
 
     public final List<Node> shapes = new ArrayList<>();
 
-    protected StoryNode parent;
+    protected StoryNode child;
     protected StoryNode node;
 
 
-    public ArrowLine(double arrowSize, StoryNode parent, StoryNode node){
-        this.parent = parent;
+    public ArrowLine(double arrowSize, StoryNode child, StoryNode node){
+        this.child = child;
         this.node = node;
 
-        DoubleBinding parentX = parent.layoutXProperty().add(parent.widthProperty().divide(2));
-        DoubleBinding parentY = parent.layoutYProperty().add(parent.heightProperty().divide(2));
+        DoubleBinding childX = child.layoutXProperty().add(child.widthProperty().divide(2));
+        DoubleBinding childY = child.layoutYProperty().add(child.heightProperty().divide(2));
         DoubleBinding nodeX = node.layoutXProperty().add(node.widthProperty().divide(2));
         DoubleBinding nodeY = node.layoutYProperty().add(node.heightProperty().divide(2));
 
-        //Create the line and bind each point from the parent to the child
+        //Create the line and bind each point from the child to the child
         Line line = new Line();
-        line.startXProperty().bind(parentX);
-        line.startYProperty().bind(parentY);
-        line.endYProperty().bind(nodeY);
+        line.startXProperty().bind(nodeX);
+        line.startYProperty().bind(nodeY);
+        line.endYProperty().bind(childY);
         line.setStrokeWidth(5);
         line.setStroke(Color.WHITE);
         line.setViewOrder(Editor.lineViewOrder);
@@ -60,8 +60,8 @@ public class ArrowLine {
 
         //Calculate the distance between the two points of the line
         Vector2 dist = new Vector2();
-        dist.x.bind(nodeX.subtract(parentX));
-        dist.y.bind(nodeY.subtract(parentY));
+        dist.x.bind(childX.subtract(nodeX));
+        dist.y.bind(childY.subtract(nodeY));
         hypLen = Bindings.createDoubleBinding(() -> {
             double dx = dist.x.get();
             double dy = dist.y.get();
@@ -81,23 +81,23 @@ public class ArrowLine {
         endpointX = Bindings.createDoubleBinding(() -> {
             double w;
             double degrees = Math.abs(angle.get());
-            double totalW = node.getWidth();
+            double totalW = child.getWidth();
 
             w = degrees * (totalW / 180);
 
-            return node.getLayoutX() + w;
+            return child.getLayoutX() + w;
 
-        }, node.widthProperty(), node.layoutXProperty(), angle);
+        }, child.widthProperty(), child.layoutXProperty(), angle);
 
         endpointY = Bindings.createDoubleBinding(() -> {
             double radians = Math.toRadians(angle.get());
-            double totalH = node.getHeight();
+            double totalH = child.getHeight();
 
             double h = (totalH / 2) - (Math.sin(radians) * (totalH / 2));
 
-            return node.getLayoutY() + h;
+            return child.getLayoutY() + h;
 
-        }, node.heightProperty(), node.layoutYProperty(), angle);
+        }, child.heightProperty(), child.layoutYProperty(), angle);
 
         line.endXProperty().bind(endpointX);
         line.endYProperty().bind(endpointY);
