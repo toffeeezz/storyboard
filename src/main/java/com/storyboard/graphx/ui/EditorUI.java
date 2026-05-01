@@ -1,10 +1,13 @@
 package com.storyboard.graphx.ui;
 
+import com.storyboard.graphx.DialogueNode;
 import com.storyboard.graphx.Editor;
 import com.storyboard.graphx.Editor.Camera;
 import com.storyboard.utils.Vector2;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
@@ -17,6 +20,7 @@ public class EditorUI extends StackPane {
 
     private final Inspector inspector;
     private final Editor editor;
+    private final QuickToolBar quickToolBar;
 
     public EditorUI(){
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/storyboard/graphx/ui/EditorUI.fxml"));
@@ -32,7 +36,40 @@ public class EditorUI extends StackPane {
 
         editor = new Editor();
         inspector = new Inspector();
+        quickToolBar = new QuickToolBar();
 
+        setInspector(inspector);
+        setQuickToolBar(quickToolBar);
+
+        editorPane.getChildren().addAll(editor);
+        inspectorWindow.getChildren().addAll(inspector);
+
+        editorPane.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+            if(e.getButton() == MouseButton.SECONDARY){
+                System.out.println("Right click");
+                if(!editorPane.getChildren().contains(quickToolBar)) {
+                    editorPane.getChildren().add(quickToolBar);
+                    quickToolBar.relocate(e.getSceneX(), e.getSceneY());
+                }
+                else
+                    editorPane.getChildren().remove(quickToolBar);
+                e.consume();
+            }else{
+                editorPane.getChildren().remove(quickToolBar);
+            }
+        });
+
+    }
+
+    private void setQuickToolBar(QuickToolBar quickToolBar){
+        quickToolBar.onDialogueButtonPressed(e -> {
+            Vector2 pos = editor.camera.getMouseWorldPos(e);
+
+            editor.addNode(new DialogueNode(editor), pos);
+        });
+    }
+
+    private void setInspector(Inspector inspector){
         editor.selectedNodeProperty().addListener(_ -> inspector.showProperties(editor.getSelectedNode(), editor.getSelectedNode() != null));
         inspector.setOnParentLabelPressed(parent -> {
             if(parent == null)
@@ -41,10 +78,5 @@ public class EditorUI extends StackPane {
             Vector2 dir = Vector2.subtract(parent.getPositionInPixel(), parent.getOrigin());
             camera.focus(dir);
         });
-
-
-        editorPane.getChildren().addAll(editor);
-        inspectorWindow.getChildren().addAll(inspector);
-
     }
 }
