@@ -29,14 +29,29 @@ public class Editor extends Pane {
     }
 
     private final Vector2 pixelOrigin = new Vector2();
-    private final Camera camera;
+    public final Camera camera;
 
     private Vector2 initClickPos;
     private Vector2 finalClickPos;
 
-    private final List<ArrowLine> arrowLines = new ArrayList<>();
+
     private final List<DialogueNode> dialogueNodes = new ArrayList<>();
     private final ObjectProperty<StoryNode> selectedNode = new SimpleObjectProperty<>();
+
+
+    public Camera getCamera() {
+        return camera;
+    }
+
+    public ObjectProperty<StoryNode> selectedNodeProperty() {return selectedNode;}
+
+    public StoryNode getSelectedNode() {
+        return selectedNode.get();
+    }
+
+    public void setSelectedNode(StoryNode node) {
+        selectedNode.set(node);
+    }
 
     public Editor(){
         setPrefSize(Settings.windowWidth, Settings.windowHeight);
@@ -55,9 +70,7 @@ public class Editor extends Pane {
         circle.setFill(Color.RED);
 
         worldPane.getChildren().add(circle);
-        focusedProperty().addListener(_ -> {
-            selectedNode.set(null);
-        });
+        focusedProperty().addListener(_ ->  selectedNode.set(null));
 
         DialogueNode card = new DialogueNode(this);
         DialogueNode card2 = new DialogueNode(this, card);
@@ -101,7 +114,7 @@ public class Editor extends Pane {
         Vector2 translateDir = new Vector2(moveDir.x.get() + camera.position.x.get(),  camera.position.y.get() - moveDir.y.get());
 
         //Apply the difference
-        camera.move(translateDir);
+        camera.drag(translateDir);
         finalClickPos = translateDir;
 
         event.consume();
@@ -134,7 +147,6 @@ public class Editor extends Pane {
 
     }
     protected void drawArrowLines(ArrowLine line){
-        arrowLines.add(line);
         worldPane.getChildren().addAll(line.shapes);
     }
 
@@ -147,18 +159,9 @@ public class Editor extends Pane {
 
     protected void removeArrow(ArrowLine arrow){
         worldPane.getChildren().removeAll(arrow.shapes);
-        arrowLines.remove(arrow);
     }
 
-    public ObjectProperty<StoryNode> selectedNodeProperty() {return selectedNode;}
 
-    public StoryNode getSelectedNode() {
-        return selectedNode.get();
-    }
-
-    public void setSelectedNode(StoryNode node) {
-        selectedNode.set(node);
-    }
 
 
     public class Camera{
@@ -174,7 +177,7 @@ public class Editor extends Pane {
         private final Translate translate;
 
         Camera() {
-            this.screenCenter = new Vector2(getPrefWidth() / 2, getPrefHeight() / 2);;
+            this.screenCenter = new Vector2(getPrefWidth() / 2, getPrefHeight() / 2);
 
             Vector2 translateOrigin = new Vector2((getPrefWidth() / 2) - (worldPane.getPrefWidth() / 2), (getPrefHeight() / 2) - (worldPane.getPrefHeight() / 2));
             position = translateOrigin;
@@ -186,9 +189,18 @@ public class Editor extends Pane {
             zoom = scale.getX();
         }
 
-        public void move(Vector2 dir){
+        public void drag(Vector2 dir){
             translate.setY(dir.y.get());
             translate.setX(dir.x.get());
+            System.out.println(camera.position);
+        }
+
+        public void focus(Vector2 dir){
+            Vector2 pos = Vector2.add(dir, screenCenter);
+            translate.setY(pos.y.get());
+            translate.setX(pos.x.get());
+            camera.position = pos;
+            System.out.println(camera.position);
         }
 
         public void zoom(double delta, Vector2 mousePos){
