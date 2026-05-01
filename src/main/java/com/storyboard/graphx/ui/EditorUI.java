@@ -1,6 +1,8 @@
 package com.storyboard.graphx.ui;
 
 import com.storyboard.graphx.Editor;
+import com.storyboard.graphx.Editor.Camera;
+import com.storyboard.utils.Vector2;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
@@ -32,7 +34,13 @@ public class EditorUI extends StackPane {
         inspector = new Inspector();
 
         editor.selectedNodeProperty().addListener(_ -> inspector.showProperties(editor.getSelectedNode(), editor.getSelectedNode() != null));
-
+        inspector.setOnParentLabelPressed(parent -> {
+            if(parent == null)
+                return;
+            Camera camera = editor.getCamera();
+            Vector2 dir = Vector2.subtract(parent.getPositionInPixel(), parent.getOrigin());
+            camera.focus(dir);
+        });
 
 
         editorPane.getChildren().addAll(editor);
