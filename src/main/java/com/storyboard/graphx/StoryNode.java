@@ -19,10 +19,20 @@ public class StoryNode extends StackPane {
 
     private StoryNode parentNode;
 
-    protected Vector2 positionInWorld; //Already at the center of the node
-    protected Vector2 positionInPixel;
+    private Vector2 positionInWorld; //Already at the center of the node
+
+    public Vector2 getPositionInPixel() {
+        return positionInPixel.multiplyBy(-1);
+    }
+
+    private Vector2 positionInPixel;
 
     private final List<StoryNode> children;
+
+    public Vector2 getOrigin() {
+        return origin;
+    }
+
     protected Vector2 origin;
 
     Vector2 lastMousePos;
