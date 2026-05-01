@@ -1,6 +1,7 @@
 package com.storyboard.graphx;
 
 import com.storyboard.constants.Settings;
+import com.storyboard.graphx.ui.UI;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -17,7 +18,7 @@ public class Window extends Stage {
 
 
 
-        Scene scene = new Scene(new Editor(), Settings.windowWidth, Settings.windowHeight);
+        Scene scene = new Scene(new UI(), Settings.windowWidth, Settings.windowHeight);
 
         String css = Objects.requireNonNull(this.getClass().getResource("/css/style.css")).toExternalForm();
         scene.getStylesheets().add(css);
