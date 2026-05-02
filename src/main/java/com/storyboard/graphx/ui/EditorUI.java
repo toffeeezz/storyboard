@@ -49,7 +49,9 @@ public class EditorUI extends StackPane {
                 System.out.println("Right click");
                 if(!editorPane.getChildren().contains(quickToolBar)) {
                     editorPane.getChildren().add(quickToolBar);
-                    quickToolBar.relocate(e.getSceneX(), e.getSceneY());
+                    System.out.println(e.getSceneX());
+                    double spawnX = e.getSceneX() > 790 ? e.getSceneX() - quickToolBar.getWidth() : e.getSceneX();
+                    quickToolBar.relocate(spawnX, e.getSceneY());
                 }
                 else
                     editorPane.getChildren().remove(quickToolBar);
