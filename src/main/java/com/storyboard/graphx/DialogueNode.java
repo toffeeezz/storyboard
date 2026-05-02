@@ -43,6 +43,7 @@ public class DialogueNode extends StoryNode {
     public DialogueNode(Editor editor, StoryNode parent){
         super(editor, parent);
         setDefault();
+        parent.addChildren(this);
     }
 
     private void setDefault(){
@@ -62,6 +63,9 @@ public class DialogueNode extends StoryNode {
         getStyleClass().add("dialogue-card");
 
         origin = new Vector2(this.getPrefWidth() / 2, this.getPrefHeight() / 2);
+        center = new Vector2();
+        center.x.bind(layoutXProperty().add(origin.x));
+        center.y.bind(layoutYProperty().add(origin.y));
         addButton.setCursor(Cursor.HAND);
         addButton.setOnMousePressed(_ -> addEntry(new DialogueEntry(this)));
         setOnKeyPressed(this::onKeyPressed);
