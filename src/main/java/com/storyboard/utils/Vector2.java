@@ -48,4 +48,10 @@ public class Vector2 {
     public Vector2 multiplyBy(double b){
         return new Vector2(x.get() * b, y.get() * b);
     }
+
+    public boolean isEquals(Vector2 b){
+        Vector2 a = this;
+
+        return a.x == b.x && a.y == b.y;
+    }
 }
