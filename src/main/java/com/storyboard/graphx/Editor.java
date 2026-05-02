@@ -36,13 +36,24 @@ public class Editor extends Pane {
     private Vector2 finalClickPos;
 
 
-    private final List<DialogueNode> dialogueNodes = new ArrayList<>();
+    private final List<StoryNode> dialogueNodes = new ArrayList<>();
     private final ObjectProperty<StoryNode> selectedNode = new SimpleObjectProperty<>();
+    private final ObjectProperty<ArrowLine> selectedArrow = new SimpleObjectProperty<>();
 
-
+    public List<StoryNode> getNodes(){return dialogueNodes;}
     public Camera getCamera() {
         return camera;
     }
+
+    public void setSelectedArrow(ArrowLine arrow){
+        selectedArrow.set(arrow);
+    }
+
+    public ArrowLine getSelectedArrow(ArrowLine arrow){
+        return selectedArrow.get();
+    }
+
+    public ObjectProperty<ArrowLine> selectedArrowProperty() {return  selectedArrow;}
 
     public ObjectProperty<StoryNode> selectedNodeProperty() {return selectedNode;}
 
@@ -101,7 +112,7 @@ public class Editor extends Pane {
     private void onKeyPressed(KeyEvent event){
         if(event.getCode() == KeyCode.S && event.isControlDown()){
             try {
-                new FileExporter().exportSBoard(dialogueNodes.stream().filter(n -> !n.isChild()).findFirst().orElse(null), "SaveData");
+                new FileExporter().exportSBoard((DialogueNode) dialogueNodes.stream().filter(n -> !n.isChild()).findFirst().orElse(null), "SaveData");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -228,6 +239,8 @@ public class Editor extends Pane {
             worldPane.setTranslateX(worldPane.getTranslateX() - dx);
             worldPane.setTranslateY(worldPane.getTranslateY() - dy);
         }
+
+        //Returns the position of the mouse relative to the screen
         public Vector2 getMouseScreenPos(InputEvent event){
             if(event instanceof MouseEvent mouseEvent)
                 return Vector2.subtract(camera.screenCenter, new Vector2(mouseEvent.getSceneX(), mouseEvent.getSceneY()));
@@ -238,11 +251,10 @@ public class Editor extends Pane {
             }
         }
 
+        //Returns the position of the mouse relative to the offset of the editor pane
         public Vector2 getMouseWorldPos(InputEvent event){
             if(event instanceof MouseEvent mouseEvent) {
                 Point2D worldPos = worldPane.sceneToLocal(mouseEvent.getSceneX(), mouseEvent.getSceneY());
-                System.out.println("Screen pos: " + getMouseScreenPos(event).multiplyBy(-1));
-                System.out.println("World pos: " + new Vector2(worldPos.getX(), worldPos.getY()));
                 return new Vector2(worldPos.getX() - getPixelOrigin().getX(), -(worldPos.getY() - getPixelOrigin().getY()));
             }
             if(event instanceof ScrollEvent scrollEvent)
