@@ -19,8 +19,13 @@ public class StoryNode extends StackPane {
     private final List<ArrowLine> arrowLines;
 
     protected Vector2 origin;
+    protected Vector2 center;
 
     Vector2 lastMousePos;
+
+    public Editor getEditor(){
+        return editor;
+    }
 
     public Vector2 getOrigin() {
         return origin;
@@ -59,7 +64,6 @@ public class StoryNode extends StackPane {
     protected StoryNode(Editor editor, StoryNode parentNode){
         this.editor = editor;
         this.parentNode = parentNode;
-        parentNode.addChildren(this);
         children = new ArrayList<>();
         arrowLines = new ArrayList<>();
         setDefaults();
@@ -105,7 +109,7 @@ public class StoryNode extends StackPane {
 
     protected void addChildren(StoryNode node){
         children.add(node);
-        ArrowLine arrow = new ArrowLine(20, node, this);
+        ArrowLine arrow = new ArrowLine(20, center, node.center);
         editor.drawArrowLines(arrow);
         arrowLines.add(arrow);
     }
@@ -134,7 +138,7 @@ public class StoryNode extends StackPane {
                 StoryNode parent = getParentNode();
                 parent.children.remove(this);
                 for(ArrowLine arrow : parent.arrowLines){
-                    if(arrow.child != this)
+                    if(arrow.endPoint.isEquals(center))
                         continue;
                     editor.removeArrow(arrow);
                 }
