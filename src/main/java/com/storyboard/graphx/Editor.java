@@ -19,11 +19,15 @@ import java.util.List;
 
 public class Editor extends Pane {
 
-    public static final int nodeViewOrder = -9;
+    public static final int nodeViewOrder = -5;
     public static final int arrowViewOrder = -15;
-    public static final int lineViewOrder = -5;
+    public static final int lineViewOrder = -9;
 
-    protected Pane worldPane = new Pane();
+    public Pane getWorldPane() {
+        return worldPane;
+    }
+
+    private final Pane worldPane = new Pane();
 
     public Vector2 getPixelOrigin() {
         return pixelOrigin;
@@ -256,6 +260,19 @@ public class Editor extends Pane {
             if(event instanceof MouseEvent mouseEvent) {
                 Point2D worldPos = worldPane.sceneToLocal(mouseEvent.getSceneX(), mouseEvent.getSceneY());
                 return new Vector2(worldPos.getX() - getPixelOrigin().getX(), -(worldPos.getY() - getPixelOrigin().getY()));
+            }
+            if(event instanceof ScrollEvent scrollEvent)
+                return new Vector2(scrollEvent.getX(), scrollEvent.getY());
+            else{
+                throw new RuntimeException("Invalid Input Event Passed");
+            }
+        }
+
+        //Returns the position of the mouse relative to the offset of the editor pane in pixel units
+        public Vector2 getMousePixelPos(InputEvent event){
+            if(event instanceof MouseEvent mouseEvent) {
+                Point2D worldPos = worldPane.sceneToLocal(mouseEvent.getSceneX(), mouseEvent.getSceneY());
+                return new Vector2(worldPos.getX(), worldPos.getY());
             }
             if(event instanceof ScrollEvent scrollEvent)
                 return new Vector2(scrollEvent.getX(), scrollEvent.getY());
