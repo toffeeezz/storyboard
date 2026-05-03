@@ -1,10 +1,7 @@
 package com.storyboard.graphx;
 
 import com.storyboard.utils.Vector2;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
@@ -49,7 +46,7 @@ public class ArrowLine {
         line.startXProperty().bind(startPoint.x);
         line.startYProperty().bind(startPoint.y);
         line.setStrokeWidth(5);
-        line.setStroke(Color.WHITE);
+        line.getStyleClass().add("arrow");
         line.setViewOrder(Editor.lineViewOrder);
         line.endYProperty().bind(endPoint.y);
         line.endXProperty().bind(endPoint.x);
@@ -60,9 +57,9 @@ public class ArrowLine {
                 -arrowSize, arrowSize / 2      // Right
         );
         head.setViewOrder(Editor.arrowViewOrder);
-        head.setFill(Color.WHITE);
-        head.layoutXProperty().bind(line.endXProperty());
+        head.layoutXProperty().bind(line.endXProperty().add(arrowSize / 2));
         head.layoutYProperty().bind(line.endYProperty());
+        head.getStyleClass().add("arrow");
         head.rotateProperty().bind(angle);
 
         shapes.add(line);
