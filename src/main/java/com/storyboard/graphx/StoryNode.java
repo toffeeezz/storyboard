@@ -77,7 +77,7 @@ public class StoryNode extends StackPane {
             mouseEvent.consume();
         });
         setOnMouseDragged(mouseEvent -> {
-            double currScale = editor.worldPane.getScaleX();
+            double currScale = editor.getWorldPane().getScaleX();
 
             Vector2 rawDelta = Vector2.subtract(new Vector2(mouseEvent.getSceneX(), mouseEvent.getSceneY()), lastMousePos);
             Vector2 scaledDelta = rawDelta.divideBy(currScale);
@@ -109,9 +109,6 @@ public class StoryNode extends StackPane {
 
     protected void addChildren(StoryNode node){
         children.add(node);
-        ArrowLine arrow = new ArrowLine(20, center, node.center);
-        editor.drawArrowLines(arrow);
-        arrowLines.add(arrow);
     }
 
     protected void updatePosition() {
