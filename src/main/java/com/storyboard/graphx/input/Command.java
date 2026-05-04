@@ -12,6 +12,11 @@ public interface Command {
     default void onReleased(MouseEvent e){}
     default void onDragOver(MouseDragEvent e){}
     default void onDragEntered(MouseDragEvent e){}
+
     default void onDragExited(MouseDragEvent e){}
+    default void onDragReleased(MouseDragEvent e){}
+    default void onDropEntered(MouseDragEvent e, Object target){}
+    default void onDropExited(MouseDragEvent e, Object target){}
+    default void onDropReleased(MouseDragEvent e, Object target){}
     default void end(){}
 }
