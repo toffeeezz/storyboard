@@ -1,6 +1,8 @@
-package com.storyboard.graphx;
+package com.storyboard.graphx.node;
 
-import com.storyboard.logic.Dialogue;
+import com.storyboard.graphx.node.comp.DialogueEntry;
+import com.storyboard.graphx.Editor;
+import com.storyboard.graphx.node.comp.Dialogue;
 import com.storyboard.utils.Vector2;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -72,7 +74,7 @@ public class DialogueNode extends StoryNode {
         });
     }
 
-    protected void removeEntry(DialogueEntry entry){
+    public void removeEntry(DialogueEntry entry){
         entryList.remove(entry);
         entryPane.getChildren().remove(entry);
     }
