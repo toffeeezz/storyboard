@@ -38,9 +38,8 @@ public class NodeLinking implements Command{
 
     @Override
     public void onReleased(MouseEvent e) {
-        startPort.getStyleClass().remove("pressed");
         if(arrowLine != null && !isLinking){
-
+            startPort.getStyleClass().remove("active");
             parentNode.getEditor().removeArrow(arrowLine);
             arrowLine = null;
         }
@@ -52,8 +51,9 @@ public class NodeLinking implements Command{
     @Override
     public void onPress(MouseEvent e) {
         startPort.getStyleClass().remove("hover");
-        startPort.getStyleClass().add("pressed");
 
+        if(!startPort.getStyleClass().contains("active"))
+            startPort.getStyleClass().add("active");
 
         if(arrowLine == null)
             arrowLine = new ArrowLine(20, startPort.getCenterPos(), parentNode.getEditor().getCamera().getMousePixelPos(e));
@@ -90,11 +90,10 @@ public class NodeLinking implements Command{
     public void onDropReleased(MouseDragEvent e, Object target) {
         System.out.println("Connected");
 
-        if(!(target instanceof Port endPort)){
+        if(!(target instanceof Port endPort)) return;
 
-            return;
-        };
         System.out.println(isLinking);
         arrowLine.bindEndpoint(endPort.getCenterPos());
+        endPort.linkedPropertyProperty().set(true);
     }
 }
