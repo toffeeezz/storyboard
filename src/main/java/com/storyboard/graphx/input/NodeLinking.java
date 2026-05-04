@@ -1,43 +1,27 @@
 package com.storyboard.graphx.input;
 
-import com.storyboard.graphx.ArrowLine;
-import com.storyboard.graphx.StoryNode;
-import com.storyboard.utils.Vector2;
-import javafx.beans.binding.Bindings;
-import javafx.geometry.Point2D;
+import com.storyboard.graphx.node.comp.ArrowLine;
+import com.storyboard.graphx.node.StoryNode;
+import com.storyboard.graphx.node.Port;
 import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.shape.Circle;
 
 public class NodeLinking implements Command{
 
 
-    private final Circle startPort;
-    private final Circle endPort;
+    private final Port startPort;
+
     private final StoryNode parentNode;
 
+    private boolean isLinking = false;
+
     private ArrowLine arrowLine;
-    private final Vector2 center = new Vector2();
 
 
-    public NodeLinking(Circle startPort, Circle endPort, StoryNode parentNode) {
+    public NodeLinking(Port startPort, StoryNode parentNode) {
         this.startPort = startPort;
-        this.endPort = endPort;
+
         this.parentNode = parentNode;
-
-        center.x.bind(Bindings.createDoubleBinding(() -> {
-            Point2D scenePos = startPort.localToScene(startPort.getCenterX(), startPort.getCenterY());
-            Point2D worldPos = parentNode.getEditor().getWorldPane().sceneToLocal(scenePos);
-            return worldPos.getX();
-        }, startPort.layoutXProperty(), parentNode.layoutXProperty()));
-
-        center.y.bind(Bindings.createDoubleBinding(() -> {
-            Point2D scenePos = startPort.localToScene(startPort.getCenterX(), startPort.getCenterY());
-            Point2D worldPos = parentNode.getEditor().getWorldPane().sceneToLocal(scenePos);
-            return worldPos.getY();
-        }, startPort.layoutYProperty(), parentNode.layoutYProperty()));
-
-
 
     }
 
@@ -55,11 +39,13 @@ public class NodeLinking implements Command{
     @Override
     public void onReleased(MouseEvent e) {
         startPort.getStyleClass().remove("pressed");
-        endPort.getStyleClass().remove("hover");
-        if(arrowLine != null){
-        parentNode.getEditor().removeArrow(arrowLine);
-        arrowLine = null;
+
+        if(arrowLine != null && !isLinking){
+
+            parentNode.getEditor().removeArrow(arrowLine);
+            arrowLine = null;
         }
+        isLinking = false;
     }
 
     @Override
@@ -69,7 +55,7 @@ public class NodeLinking implements Command{
 
 
         if(arrowLine == null)
-            arrowLine = new ArrowLine(20, center, parentNode.getEditor().getCamera().getMousePixelPos(e));
+            arrowLine = new ArrowLine(20, startPort.getCenterPos(), parentNode.getEditor().getCamera().getMousePixelPos(e));
 
         arrowLine.setMouseTransparent(true);
         parentNode.getEditor().drawArrowLines(arrowLine);
@@ -77,18 +63,36 @@ public class NodeLinking implements Command{
 
     @Override
     public void onDragged(MouseEvent e) {
+        if(arrowLine == null) return;
         arrowLine.bindEndpoint(parentNode.getEditor().getCamera().getMousePixelPos(e));
-        System.out.println("Dragging");
+
     }
 
     @Override
-    public void onDragEntered(MouseDragEvent e) {
+    public void onDropEntered(MouseDragEvent e, Object target) {
+        if(!(target instanceof Port endPort)) return;
+
         endPort.getStyleClass().add("hover");
+        isLinking = true;
         System.out.println("port hovering");
     }
 
     @Override
-    public void onDragExited(MouseDragEvent e) {
+    public void onDropExited(MouseDragEvent e, Object target) {
+        if(!(target instanceof Port endPort)) return;
+
+        isLinking = false;
         endPort.getStyleClass().remove("hover");
+    }
+
+    @Override
+    public void onDropReleased(MouseDragEvent e, Object target) {
+        System.out.println("Connected");
+
+        if(!(target instanceof Port endPort)) return;
+
+        arrowLine.bindEndpoint(endPort.getCenterPos());
+        isLinking = false;
+        end();
     }
 }
