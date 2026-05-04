@@ -55,8 +55,8 @@ public class ArrowLine {
                 -arrowSize, arrowSize / 2      // Right
         );
         head.setViewOrder(Editor.arrowViewOrder);
-        head.layoutXProperty().bind(line.endXProperty().add(arrowSize / 2));
-        head.layoutYProperty().bind(line.endYProperty());
+        head.layoutXProperty().bind(startPoint.x.add(endPoint.x).divide(2).add(arrowSize / 2));
+        head.layoutYProperty().bind(startPoint.y.add(endPoint.y).divide(2));
         head.getStyleClass().add("arrow");
         head.rotateProperty().bind(angle);
 
