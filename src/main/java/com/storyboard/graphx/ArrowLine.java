@@ -2,7 +2,6 @@ package com.storyboard.graphx;
 
 import com.storyboard.utils.Vector2;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
@@ -21,11 +20,6 @@ public class ArrowLine {
     public final List<Shape> shapes = new ArrayList<>();
 
 
-    private final Line line;
-    private final Polygon head;
-
-
-
     public ArrowLine(double arrowSize, Vector2 start, Vector2 end) {
 
 
@@ -42,7 +36,7 @@ public class ArrowLine {
 
         bindEndpoint(end);
 
-        line = new Line();
+        Line line = new Line();
         line.startXProperty().bind(startPoint.x);
         line.startYProperty().bind(startPoint.y);
         line.setStrokeWidth(5);
@@ -51,7 +45,10 @@ public class ArrowLine {
         line.endYProperty().bind(endPoint.y);
         line.endXProperty().bind(endPoint.x);
 
-        head = new Polygon(
+        //Tip
+        // Left
+        // Right
+        Polygon head = new Polygon(
                 0, 0,        //Tip
                 -arrowSize, -arrowSize / 2,    // Left
                 -arrowSize, arrowSize / 2      // Right
@@ -71,7 +68,12 @@ public class ArrowLine {
         double dy = dist.getY();
         double radians = Math.atan2(dy, dx);
         angle.set(Math.toDegrees(radians));
-        System.out.println(Math.toDegrees(radians));
+
+    }
+
+    public void setMouseTransparent(boolean value){
+        for(Shape shape : shapes)
+            shape.setMouseTransparent(value);
     }
 
     public void bindEndpoint(Vector2 point){
