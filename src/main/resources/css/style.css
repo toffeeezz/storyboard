@@ -80,7 +80,7 @@
     -fx-stroke: -fx-port-hover-stroke;
 }
 
-.port.start.pressed {
+.port.start.active {
     -fx-fill: -fx-port-active-fill;
     -fx-stroke: -fx-port-active-stroke;
 }
@@ -94,6 +94,13 @@
 .port.end.hover{
     -fx-fill: -fx-port-hover-fill;
     -fx-stroke: -fx-port-hover-stroke;
+    -fx-stroke-dash-array: 1 5 1 5 1 5;
+    -fx-stroke-width: 2;
+}
+
+.port.end.active{
+    -fx-fill: -fx-port-active-fill;
+    -fx-stroke: -fx-port-active-stroke;
     -fx-stroke-dash-array: 1 5 1 5 1 5;
     -fx-stroke-width: 2;
 }
