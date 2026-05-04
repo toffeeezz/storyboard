@@ -3,6 +3,9 @@ package com.storyboard.graphx;
 import com.storyboard.constants.Settings;
 import com.storyboard.graphx.input.CommandHandler;
 import com.storyboard.graphx.input.CameraPanning;
+import com.storyboard.graphx.node.DialogueNode;
+import com.storyboard.graphx.node.StoryNode;
+import com.storyboard.graphx.node.comp.ArrowLine;
 import com.storyboard.utils.Vector2;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -41,7 +44,6 @@ public class Editor extends Pane {
     }
 
     private final CommandHandler commandHandler;
-    private final CameraPanning panningCommand;
 
     private final List<StoryNode> dialogueNodes = new ArrayList<>();
     private final ObjectProperty<StoryNode> selectedNode = new SimpleObjectProperty<>();
@@ -83,7 +85,6 @@ public class Editor extends Pane {
         camera = new Camera();
 
         worldPane.getTransforms().addAll(camera.translate, camera.scale);
-        panningCommand = new CameraPanning(camera);
 
         //Origin Center
         Circle circle = new Circle(pixelOrigin.getX(), pixelOrigin.getY(), 12);
@@ -103,7 +104,7 @@ public class Editor extends Pane {
         setOnMousePressed(this::onMousePressed);
         setOnMouseDragged(this::onMouseDragged);
         setOnMouseReleased(this::onMouseReleased);
-        setOnKeyPressed(this::onKeyPressed);
+
         setOnScroll(this::onScroll);
 
         getChildren().addAll(worldPane);
@@ -114,15 +115,19 @@ public class Editor extends Pane {
         if(commandHandler.isActive()) return;
 
         if(event.getButton() == MouseButton.PRIMARY)
-            commandHandler.start(panningCommand);
+            commandHandler.start(new CameraPanning(camera));
 
         commandHandler.press(event);
         requestFocus();
         event.consume();
     }
 
-    private void onKeyPressed(KeyEvent event){
-
+    public void registerLinkPort(Circle endPort){
+        endPort.setOnMouseDragEntered(e -> commandHandler.dropEnter(e, endPort));
+        endPort.setOnMouseDragExited(e -> commandHandler.dropExited(e, endPort));
+        endPort.setOnMouseDragReleased(e -> {
+            commandHandler.dropReleased(e, endPort);
+        });
     }
 
     private void onMouseDragged(MouseEvent event){
@@ -133,7 +138,6 @@ public class Editor extends Pane {
 
     private void onMouseReleased(MouseEvent event){
         commandHandler.release(event);
-        commandHandler.end();
         event.consume();
     }
 
@@ -150,7 +154,7 @@ public class Editor extends Pane {
             dialogueNodes.add(dialogueNode);
 
         //Relocate the node to 'pos' after adding
-        Vector2 spawn = new Vector2((pixelOrigin.getX() + pos.getX()) - node.origin.getX(), (pixelOrigin.getY() - pos.getY()) - node.origin.getY());
+        Vector2 spawn = new Vector2((pixelOrigin.getX() + pos.getX()) - node.getOrigin().getX(), (pixelOrigin.getY() - pos.getY()) - node.getOrigin().getY());
         node.relocate(spawn.getX(), spawn.getY());
         node.updatePosition();
 
@@ -159,7 +163,7 @@ public class Editor extends Pane {
         worldPane.getChildren().addAll(line.shapes);
     }
 
-    protected void removeNode(StoryNode node){
+    public void removeNode(StoryNode node){
 
         worldPane.getChildren().remove(node);
         if(node instanceof DialogueNode dialogueNode)
