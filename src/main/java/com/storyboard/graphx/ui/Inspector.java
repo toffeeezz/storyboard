@@ -1,6 +1,6 @@
 package com.storyboard.graphx.ui;
 
-import com.storyboard.graphx.StoryNode;
+import com.storyboard.graphx.node.StoryNode;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
