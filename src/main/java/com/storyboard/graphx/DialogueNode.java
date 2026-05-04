@@ -40,12 +40,6 @@ public class DialogueNode extends StoryNode {
 
     }
 
-    public DialogueNode(Editor editor, StoryNode parent){
-        super(editor, parent);
-        setDefault();
-        parent.addChildren(this);
-    }
-
     private void setDefault(){
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/storyboard/graphx/DialogueNode.fxml"));
         loader.setRoot(this);

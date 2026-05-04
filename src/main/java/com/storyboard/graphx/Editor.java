@@ -93,8 +93,8 @@ public class Editor extends Pane {
         focusedProperty().addListener(_ ->  selectedNode.set(null));
 
         DialogueNode card = new DialogueNode(this);
-        DialogueNode card2 = new DialogueNode(this, card);
-        DialogueNode card3 = new DialogueNode(this, card2);
+        DialogueNode card2 = new DialogueNode(this);
+        DialogueNode card3 = new DialogueNode(this);
 
         addNode(card, new Vector2(0, 200));
         addNode(card2, new Vector2(0, -200));
