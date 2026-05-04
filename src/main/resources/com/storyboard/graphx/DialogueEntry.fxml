@@ -11,9 +11,10 @@
 <?import javafx.scene.paint.Stop?>
 <?import javafx.scene.shape.Circle?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import com.storyboard.graphx.node.Port?>
 
 
-<fx:root alignment="TOP_CENTER" prefWidth="498.0" styleClass="entry" stylesheets="@../../../css/style.css" type="VBox" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root alignment="TOP_CENTER" prefWidth="498.0" styleClass="entry" stylesheets="@../../../css/style.css" type="VBox" xmlns="http://javafx.com/javafx/24" xmlns:fx="http://javafx.com/fxml/1">
     <AnchorPane prefHeight="30.0" prefWidth="498.0" styleClass="entry" stylesheets="@../../../css/style.css">
       <AnchorPane layoutX="10.399999618530273" layoutY="3.200000047683716" prefHeight="46.0" prefWidth="457.0" styleClass="input-area" stylesheets="@../../../css/style.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="31.0" AnchorPane.topAnchor="5.0">
          <children>
@@ -53,18 +54,18 @@
                  <TextArea fx:id="dialogueField" prefWidth="457.0" promptText="Write you dialogue here..." styleClass="textArea" stylesheets="@../../../css/style.css" wrapText="true" AnchorPane.bottomAnchor="11.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="30.0" />
             </children>
          </AnchorPane>
-           <Circle fx:id="endPort" fill="#ffebeb" radius="15.0" stroke="TRANSPARENT" strokeType="INSIDE" AnchorPane.leftAnchor="-30.0" AnchorPane.topAnchor="10.0">
+           <Port fx:id="endPort" fill="#ffebeb" radius="15.0" stroke="TRANSPARENT" strokeType="INSIDE" AnchorPane.leftAnchor="-30.0" AnchorPane.topAnchor="10.0">
             <styleClass>
                <String fx:value="port" />
                <String fx:value="end" />
             </styleClass>
-         </Circle>
-           <Circle fx:id="startPort" fill="#ffebeb" radius="15.0" stroke="TRANSPARENT" strokeType="INSIDE" AnchorPane.rightAnchor="-30.0" AnchorPane.topAnchor="10.0">
+         </Port>
+           <Port fx:id="startPort" fill="#ffebeb" radius="15.0" stroke="TRANSPARENT" strokeType="INSIDE" AnchorPane.rightAnchor="-30.0" AnchorPane.topAnchor="10.0">
             <styleClass>
                <String fx:value="start" />
                <String fx:value="port" />
             </styleClass>
-         </Circle>
+         </Port>
       </children>
    </AnchorPane>
 </fx:root>

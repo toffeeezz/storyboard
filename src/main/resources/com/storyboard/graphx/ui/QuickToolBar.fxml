@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.VBox?>
 
 
-<fx:root alignment="TOP_CENTER" prefWidth="200.0" styleClass="quickToolBar" stylesheets="@../../../../css/style.css" type="VBox" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root alignment="TOP_CENTER" prefWidth="200.0" styleClass="quickToolBar" stylesheets="@../../../../css/style.css" type="VBox" xmlns="http://javafx.com/javafx/24" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Button fx:id="addDialogueButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="213.0" text="Dialogue Node" />
    </children>

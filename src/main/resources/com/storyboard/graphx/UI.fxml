@@ -2,4 +2,4 @@
 
 <?import javafx.scene.layout.StackPane?>
 
-<fx:root fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" styleClass="UI" stylesheets="@../../../css/style.css" type="StackPane" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" />
+<fx:root fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" styleClass="UI" stylesheets="@../../../css/style.css" type="StackPane" xmlns="http://javafx.com/javafx/24" xmlns:fx="http://javafx.com/fxml/1" />
