@@ -13,6 +13,8 @@ import javafx.scene.layout.VBox;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DialogueEntry extends VBox {
 
@@ -36,7 +38,40 @@ public class DialogueEntry extends VBox {
     @FXML private TextField characterField;
     @FXML private TextArea dialogueField;
     @FXML private Port startPort;
+
     @FXML private Port endPort;
+
+    public Port getConnectedPort() {
+        return connectedPort;
+    }
+
+    public void setConnectedPort(Port connectedPort) {
+        this.connectedPort = connectedPort;
+    }
+
+    private Port connectedPort;
+
+    public DialogueEntry getNextEntry() {
+        return nextEntry;
+    }
+
+    public void setNextEntry(DialogueEntry nextEntry) {
+        this.nextEntry = nextEntry;
+    }
+
+    private DialogueEntry nextEntry;
+
+    public ArrowLine getArrowLine() {
+        return arrowLine;
+    }
+
+    public void setArrowLine(ArrowLine arrowLine) {
+        this.arrowLine = arrowLine;
+    }
+
+    private ArrowLine arrowLine;
+
+
 
 
     public DialogueEntry(DialogueNode dialogueNode){
@@ -57,6 +92,8 @@ public class DialogueEntry extends VBox {
         this.dialogueNode = dialogueNode;
         startPort.setStoryNode(this.dialogueNode);
         endPort.setStoryNode(this.dialogueNode);
+        startPort.setEntry(this);
+        endPort.setEntry(this);
 
         deleteButton.setCursor(Cursor.HAND);
         startPort.setCursor(Cursor.HAND);
@@ -67,14 +104,17 @@ public class DialogueEntry extends VBox {
         deleteButton.setOnMousePressed(_ -> dialogueNode.removeEntry(this));
     }
 
+    public void cycleEntry(){
+        System.out.println(getDialogue());
+        if(nextEntry == null) return;
+        getNextEntry().cycleEntry();
+    }
 
     private void setStartPort(){
 
-
-
         startPort.setOnMouseMoved(e -> {
             if(!dialogueNode.getEditor().getCommandHandler().isActive())
-                dialogueNode.getEditor().getCommandHandler().start(new NodeLinking(startPort, dialogueNode));
+                dialogueNode.getEditor().getCommandHandler().start(new NodeLinking(startPort, endPort, dialogueNode));
             dialogueNode.getEditor().getCommandHandler().hover(e);
         });
 
