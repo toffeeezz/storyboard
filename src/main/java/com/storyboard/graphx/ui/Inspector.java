@@ -32,22 +32,14 @@ public class Inspector extends VBox {
     protected void showProperties(StoryNode node, boolean toggle){
         if(toggle){
             String name = node.getId();
-            StoryNode parent = node.getParentNode();
-            String parentName = parent != null ? node.getParentNode().getId() : "";
 
             node.idProperty().addListener(_ -> {
                 String newName = node.getId();
                 nameLabel.setText(newName);
             });
             nameLabel.setText(name);
-            parentLabel.setText(parentName);
-            parentLabel.setOnMousePressed(_ -> {
-                if(onParentLabelPressed != null)
-                    onParentLabelPressed.accept(parent);
-            });
         }else{
             nameLabel.setText("");
-            parentLabel.setText("");
         }
     }
 
