@@ -1,5 +1,6 @@
-package com.storyboard.graphx;
+package com.storyboard.graphx.node.comp;
 
+import com.storyboard.graphx.Editor;
 import com.storyboard.utils.Vector2;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.shape.Line;
