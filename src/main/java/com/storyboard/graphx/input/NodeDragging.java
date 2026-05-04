@@ -1,6 +1,6 @@
 package com.storyboard.graphx.input;
 
-import com.storyboard.graphx.StoryNode;
+import com.storyboard.graphx.node.StoryNode;
 import com.storyboard.utils.Vector2;
 import javafx.scene.input.MouseEvent;
 
