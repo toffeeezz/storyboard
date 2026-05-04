@@ -91,6 +91,14 @@
     -fx-stroke-width: 2;
 }
 
+.port.end.hover{
+    -fx-fill: -fx-port-hover-fill;
+    -fx-stroke: -fx-port-hover-stroke;
+    -fx-stroke-dash-array: 1 5 1 5 1 5;
+    -fx-stroke-width: 2;
+}
+
+
 .port.end{
     -fx-fill: -fx-port-default-fill;
     -fx-stroke: -fx-port-default-stroke;
