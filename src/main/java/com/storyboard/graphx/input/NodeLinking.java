@@ -10,6 +10,7 @@ public class NodeLinking implements Command{
 
 
     private final Port startPort;
+    private final Port currentEndPort;
 
     private final StoryNode parentNode;
 
@@ -18,8 +19,9 @@ public class NodeLinking implements Command{
     private ArrowLine arrowLine;
 
 
-    public NodeLinking(Port startPort, StoryNode parentNode) {
+    public NodeLinking(Port startPort, Port currentEndPort, StoryNode parentNode) {
         this.startPort = startPort;
+        this.currentEndPort = currentEndPort;
 
         this.parentNode = parentNode;
 
@@ -55,8 +57,16 @@ public class NodeLinking implements Command{
         if(!startPort.getStyleClass().contains("active"))
             startPort.getStyleClass().add("active");
 
-        if(arrowLine == null)
-            arrowLine = new ArrowLine(20, startPort.getCenterPos(), parentNode.getEditor().getCamera().getMousePixelPos(e));
+        if(startPort.getEntry() != null && startPort.getEntry().getArrowLine() != null) {
+            parentNode.getEditor().removeArrow(startPort.getEntry().getArrowLine());
+            startPort.getEntry().setArrowLine(null);
+            startPort.getEntry().getConnectedPort().linkedPropertyProperty().set(false);
+            startPort.getEntry().getConnectedPort().getStyleClass().remove("hover");
+            startPort.getEntry().setConnectedPort(null);
+            startPort.getEntry().setNextEntry(null);
+        }
+
+        arrowLine = new ArrowLine(20, startPort.getCenterPos(), parentNode.getEditor().getCamera().getMousePixelPos(e));
 
         arrowLine.setMouseTransparent(true);
         parentNode.getEditor().drawArrowLines(arrowLine);
@@ -75,7 +85,6 @@ public class NodeLinking implements Command{
 
         endPort.getStyleClass().add("hover");
         isLinking = true;
-        System.out.println("port hovering");
     }
 
     @Override
@@ -88,12 +97,22 @@ public class NodeLinking implements Command{
 
     @Override
     public void onDropReleased(MouseDragEvent e, Object target) {
-        System.out.println("Connected");
 
-        if(!(target instanceof Port endPort)) return;
+        if(!(target instanceof Port endPort)) {
+            onDropExited(e, target);
+            return;
+        }
+
+        if(currentEndPort.equals(endPort)){
+            onDropExited(e, endPort);
+            return;
+        }
 
         System.out.println(isLinking);
         arrowLine.bindEndpoint(endPort.getCenterPos());
         endPort.linkedPropertyProperty().set(true);
+        startPort.getEntry().setNextEntry(endPort.getEntry());
+        startPort.getEntry().setArrowLine(arrowLine);
+        startPort.getEntry().setConnectedPort(endPort);
     }
 }
