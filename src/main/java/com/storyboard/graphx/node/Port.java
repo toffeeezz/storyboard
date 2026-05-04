@@ -1,5 +1,6 @@
 package com.storyboard.graphx.node;
 
+import com.storyboard.graphx.node.comp.DialogueEntry;
 import com.storyboard.utils.Vector2;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -27,6 +28,16 @@ public class Port extends Circle {
     }
 
     private StoryNode storyNode;
+
+    public DialogueEntry getEntry() {
+        return entry;
+    }
+
+    public void setEntry(DialogueEntry entry) {
+        this.entry = entry;
+    }
+
+    private DialogueEntry entry;
 
     public Port() {
         super();
