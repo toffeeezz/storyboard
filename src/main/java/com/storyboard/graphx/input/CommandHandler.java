@@ -29,7 +29,6 @@ public class CommandHandler {
     public void release(MouseEvent e){
         if(activeCommand == null) return;
         activeCommand.onReleased(e);
-        activeCommand = null;
     }
 
     public void drag(MouseEvent e){
@@ -61,6 +60,26 @@ public class CommandHandler {
     public void dragExit(MouseDragEvent e){
         if (!isActive()) return;
         activeCommand.onDragExited(e);
+    }
+
+    public void dragReleased(MouseDragEvent e){
+        if(!isActive()) return;
+        activeCommand.onDragReleased(e);
+    }
+
+    public void dropEnter(MouseDragEvent e, Object target){
+        if(!isActive()) return;
+        activeCommand.onDropEntered(e, target);
+    }
+
+    public void dropExited(MouseDragEvent e, Object target){
+        if(!isActive()) return;
+        activeCommand.onDropExited(e, target);
+    }
+
+    public void dropReleased(MouseDragEvent e, Object target){
+        if(!isActive()) return;
+        activeCommand.onDropReleased(e, target);
     }
 
     public void end(){
