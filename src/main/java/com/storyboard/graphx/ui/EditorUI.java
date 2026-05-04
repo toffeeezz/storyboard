@@ -1,6 +1,6 @@
 package com.storyboard.graphx.ui;
 
-import com.storyboard.graphx.DialogueNode;
+import com.storyboard.graphx.node.DialogueNode;
 import com.storyboard.graphx.Editor;
 import com.storyboard.graphx.Editor.Camera;
 import com.storyboard.utils.Vector2;
