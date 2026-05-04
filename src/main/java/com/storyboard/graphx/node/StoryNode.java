@@ -58,10 +58,7 @@ public class StoryNode extends StackPane {
             editor.getCommandHandler().drag(mouseEvent);
             mouseEvent.consume();
         });
-        setOnMouseReleased(e -> {
-            editor.getCommandHandler().release(e);
-            editor.getCommandHandler().end();
-        });
+        setOnMouseReleased(editor.getCommandHandler()::release);
 
         setOnKeyPressed(this::onKeyPressed);
 
