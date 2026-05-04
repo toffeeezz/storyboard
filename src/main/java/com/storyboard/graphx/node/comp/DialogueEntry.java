@@ -1,14 +1,15 @@
-package com.storyboard.graphx;
+package com.storyboard.graphx.node.comp;
 
 
 import com.storyboard.graphx.input.NodeLinking;
+import com.storyboard.graphx.node.DialogueNode;
+import com.storyboard.graphx.node.Port;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Circle;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.IOException;
@@ -17,7 +18,7 @@ public class DialogueEntry extends VBox {
 
     private String character;
     private String dialogue;
-    private final DialogueNode parent;
+    private final DialogueNode dialogueNode;
 
     public String getDialogue() {
         dialogue = dialogueField.getText();
@@ -34,8 +35,8 @@ public class DialogueEntry extends VBox {
     @FXML private FontIcon deleteButton;
     @FXML private TextField characterField;
     @FXML private TextArea dialogueField;
-    @FXML private Circle startPort;
-    @FXML private Circle endPort;
+    @FXML private Port startPort;
+    @FXML private Port endPort;
 
 
     public DialogueEntry(DialogueNode dialogueNode){
@@ -53,10 +54,13 @@ public class DialogueEntry extends VBox {
 
         dialogue = dialogueField.getText();
         character = characterField.getText();
-        parent = dialogueNode;
+        this.dialogueNode = dialogueNode;
+        startPort.setStoryNode(this.dialogueNode);
+        endPort.setStoryNode(this.dialogueNode);
 
         deleteButton.setCursor(Cursor.HAND);
         startPort.setCursor(Cursor.HAND);
+        this.dialogueNode.getEditor().registerLinkPort(endPort);
 
         setStartPort();
 
@@ -69,17 +73,16 @@ public class DialogueEntry extends VBox {
 
 
         startPort.setOnMouseMoved(e -> {
-            if(!parent.getEditor().getCommandHandler().isActive())
-                parent.getEditor().getCommandHandler().start(new NodeLinking(startPort, endPort, parent));
-            parent.getEditor().getCommandHandler().hover(e);
+            if(!dialogueNode.getEditor().getCommandHandler().isActive())
+                dialogueNode.getEditor().getCommandHandler().start(new NodeLinking(startPort, dialogueNode));
+            dialogueNode.getEditor().getCommandHandler().hover(e);
         });
 
         startPort.setOnDragDetected(_ -> startPort.startFullDrag());
-        startPort.setOnMouseDragged(parent.getEditor().getCommandHandler()::drag);
-        startPort.setOnMousePressed(parent.getEditor().getCommandHandler()::press);
-        startPort.setOnMouseExited(parent.getEditor().getCommandHandler()::exit);
-        startPort.setOnMouseReleased(e -> parent.getEditor().getCommandHandler().release(e));
-        endPort.setOnMouseDragEntered(parent.getEditor().getCommandHandler()::dragEnter);
-        endPort.setOnMouseDragExited(parent.getEditor().getCommandHandler()::dragExit);
+        startPort.setOnMouseDragged(dialogueNode.getEditor().getCommandHandler()::drag);
+        startPort.setOnMousePressed(dialogueNode.getEditor().getCommandHandler()::press);
+        startPort.setOnMouseExited(dialogueNode.getEditor().getCommandHandler()::exit);
+        startPort.setOnMouseReleased(e -> dialogueNode.getEditor().getCommandHandler().release(e));
+
     }
 }
