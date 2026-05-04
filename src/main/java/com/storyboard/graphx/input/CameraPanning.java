@@ -34,6 +34,6 @@ public class CameraPanning implements Command{
     @Override
     public void onReleased(MouseEvent e) {
         if (finalClickPos != null) camera.position = finalClickPos;
-
+        end();
     }
 }
