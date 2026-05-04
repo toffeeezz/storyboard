@@ -1,7 +1,8 @@
 package com.storyboard.graphx;
 
 import com.storyboard.constants.Settings;
-import com.storyboard.logic.FileExporter;
+import com.storyboard.graphx.input.CommandHandler;
+import com.storyboard.graphx.input.CameraPanning;
 import com.storyboard.utils.Vector2;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -13,7 +14,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,9 +36,12 @@ public class Editor extends Pane {
     private final Vector2 pixelOrigin = new Vector2();
     public final Camera camera;
 
-    private Vector2 initClickPos;
-    private Vector2 finalClickPos;
+    public CommandHandler getCommandHandler() {
+        return commandHandler;
+    }
 
+    private final CommandHandler commandHandler;
+    private final CameraPanning panningCommand;
 
     private final List<StoryNode> dialogueNodes = new ArrayList<>();
     private final ObjectProperty<StoryNode> selectedNode = new SimpleObjectProperty<>();
@@ -73,13 +76,14 @@ public class Editor extends Pane {
         setPrefSize(Settings.windowWidth, Settings.windowHeight);
         getStyleClass().add("editor");
         worldPane.setPrefSize(10000, 10000);
-
+        commandHandler = new CommandHandler();
 
         //Centralize everything
         pixelOrigin.setVector(worldPane.getPrefWidth() / 2, worldPane.getPrefHeight() / 2);
         camera = new Camera();
 
         worldPane.getTransforms().addAll(camera.translate, camera.scale);
+        panningCommand = new CameraPanning(camera);
 
         //Origin Center
         Circle circle = new Circle(pixelOrigin.getX(), pixelOrigin.getY(), 12);
@@ -107,40 +111,30 @@ public class Editor extends Pane {
 
     private void onMousePressed(MouseEvent event) {
         //Record the initial click position
-        initClickPos = camera.getMouseScreenPos(event);
-        System.out.println(camera.getMouseWorldPos(event));
+        if(commandHandler.isActive()) return;
+
+        if(event.getButton() == MouseButton.PRIMARY)
+            commandHandler.start(panningCommand);
+
+        commandHandler.press(event);
         requestFocus();
         event.consume();
     }
 
     private void onKeyPressed(KeyEvent event){
-        if(event.getCode() == KeyCode.S && event.isControlDown()){
-            try {
-                new FileExporter().exportSBoard((DialogueNode) dialogueNodes.stream().filter(n -> !n.isChild()).findFirst().orElse(null), "SaveData");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            event.consume();
-        }
+
     }
 
     private void onMouseDragged(MouseEvent event){
-        if(event.getButton() != MouseButton.PRIMARY)
-            return;
-        //Get the distance between initial click position and current position
-        Vector2 mousePos = camera.getMouseScreenPos(event);
-        Vector2 moveDir = new Vector2(initClickPos.getX() - mousePos.getX(),  mousePos.getY() - initClickPos.getY());
-        Vector2 translateDir = new Vector2(moveDir.getX() + camera.position.getX(),  camera.position.getY() - moveDir.getY());
 
-        //Apply the difference
-        camera.drag(translateDir);
-        finalClickPos = translateDir;
-
+        commandHandler.drag(event);
         event.consume();
     }
 
     private void onMouseReleased(MouseEvent event){
-        if (finalClickPos != null) camera.position = finalClickPos;
+        commandHandler.release(event);
+        commandHandler.end();
+        event.consume();
     }
 
     private void onScroll(ScrollEvent event){
@@ -161,7 +155,7 @@ public class Editor extends Pane {
         node.updatePosition();
 
     }
-    protected void drawArrowLines(ArrowLine line){
+    public void drawArrowLines(ArrowLine line){
         worldPane.getChildren().addAll(line.shapes);
     }
 
@@ -172,7 +166,7 @@ public class Editor extends Pane {
             dialogueNodes.remove(dialogueNode);
     }
 
-    protected void removeArrow(ArrowLine arrow){
+    public void removeArrow(ArrowLine arrow){
         worldPane.getChildren().removeAll(arrow.shapes);
     }
 
