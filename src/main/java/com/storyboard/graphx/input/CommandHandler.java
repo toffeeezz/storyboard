@@ -15,10 +15,13 @@ public class CommandHandler {
         if(activeCommand != null) {
             logger.warning("Command already active: " + activeCommand.getClass().getSimpleName()
                             + "\nUnable to activate: " + command.getClass().getSimpleName());
+
             return;
         }
 
+
         activeCommand = command;
+        logger.info(activeCommand.getClass().getSimpleName() + " is starting");
     }
 
     public void press(MouseEvent e){
@@ -29,6 +32,7 @@ public class CommandHandler {
     public void release(MouseEvent e){
         if(activeCommand == null) return;
         activeCommand.onReleased(e);
+        end();
     }
 
     public void drag(MouseEvent e){
@@ -83,8 +87,9 @@ public class CommandHandler {
     }
 
     public void end(){
-        if(!isActive()) return;
-        activeCommand.end();
-        activeCommand = null;
+        if(isActive()) {
+            logger.info(activeCommand.getClass().getSimpleName() + " has ended");
+            activeCommand = null;
+        }
     }
 }
