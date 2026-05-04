@@ -1,5 +1,6 @@
-package com.storyboard.graphx;
+package com.storyboard.graphx.node;
 
+import com.storyboard.graphx.Editor;
 import com.storyboard.graphx.input.NodeDragging;
 import com.storyboard.utils.Vector2;
 import javafx.scene.input.KeyCode;
@@ -17,7 +18,7 @@ public class StoryNode extends StackPane {
 
     private final List<StoryNode> children;
 
-    protected Vector2 origin;
+    Vector2 origin;
     protected Vector2 center;
 
     public Editor getEditor(){
@@ -75,10 +76,6 @@ public class StoryNode extends StackPane {
                 setViewOrder(Editor.nodeViewOrder);
             }
         });
-    }
-
-    protected void addChildren(StoryNode node){
-        children.add(node);
     }
 
     public void updatePosition() {
